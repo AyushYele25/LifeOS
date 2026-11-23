@@ -1,0 +1,124 @@
+{
+  "accuracy": 0.9447734912758123,
+  "macro_f1": 0.6637243035987253,
+  "weighted_f1": 0.9610633564222176,
+  "test_samples": 6247,
+  "train_samples": 24984,
+  "per_category": {
+    "EMI & Loans": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 107.0
+    },
+    "Electricity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 260.0
+    },
+    "Entertainment": {
+      "precision": 0.9826839826839827,
+      "recall": 0.88671875,
+      "f1-score": 0.9322381930184805,
+      "support": 256.0
+    },
+    "Food & Dining": {
+      "precision": 1.0,
+      "recall": 0.9788359788359788,
+      "f1-score": 0.9893048128342246,
+      "support": 1134.0
+    },
+    "Fuel": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 551.0
+    },
+    "Groceries": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1363.0
+    },
+    "Health & Medical": {
+      "precision": 0.10294117647058823,
+      "recall": 0.23333333333333334,
+      "f1-score": 0.14285714285714285,
+      "support": 30.0
+    },
+    "Investments": {
+      "precision": 0.16049382716049382,
+      "recall": 0.4642857142857143,
+      "f1-score": 0.23853211009174313,
+      "support": 28.0
+    },
+    "Maintenance": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "Miscellaneous": {
+      "precision": 0.1016949152542373,
+      "recall": 0.2222222222222222,
+      "f1-score": 0.13953488372093023,
+      "support": 27.0
+    },
+    "Mobile & Internet": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "Rent": {
+      "precision": 0.9746376811594203,
+      "recall": 0.9180887372013652,
+      "f1-score": 0.945518453427065,
+      "support": 293.0
+    },
+    "Salary": {
+      "precision": 0.9813432835820896,
+      "recall": 0.9100346020761245,
+      "f1-score": 0.9443447037701975,
+      "support": 289.0
+    },
+    "Shopping": {
+      "precision": 1.0,
+      "recall": 0.9435146443514645,
+      "f1-score": 0.9709364908503767,
+      "support": 478.0
+    },
+    "Subscriptions": {
+      "precision": 1.0,
+      "recall": 0.8388791593695272,
+      "f1-score": 0.9123809523809524,
+      "support": 571.0
+    },
+    "Transportation": {
+      "precision": 1.0,
+      "recall": 0.9565217391304348,
+      "f1-score": 0.9777777777777777,
+      "support": 828.0
+    },
+    "Utilities": {
+      "precision": 0.07017543859649122,
+      "recall": 0.125,
+      "f1-score": 0.0898876404494382,
+      "support": 32.0
+    },
+    "accuracy": 0.9447734912758123,
+    "macro avg": {
+      "precision": 0.6690570767592532,
+      "recall": 0.6751432282827156,
+      "f1-score": 0.6637243035987253,
+      "support": 6247.0
+    },
+    "weighted avg": {
+      "precision": 0.9805214644315026,
+      "recall": 0.9447734912758123,
+      "f1-score": 0.9610633564222176,
+      "support": 6247.0
+    }
+  }
+}

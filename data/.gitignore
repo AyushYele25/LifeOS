@@ -1,0 +1,11 @@
+# Kaggle raw downloads (large files, redistribution restrictions)
+kaggle/
+
+# Processed data (regeneratable)
+processed/
+
+# Synthetic data (regeneratable)
+synthetic/
+
+# Keep the explore script
+!explore_datasets.py
