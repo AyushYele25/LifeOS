@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LIFEOS — Stateful AI Financial Decision Engine</title>
-  <!-- Tailwind CSS -->
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,308 +14,476 @@
         extend: {
           colors: {
             brand: {
-              50: '#f0fdf4',
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
               500: '#10b981',
               600: '#059669',
               700: '#047857',
             },
+            accent: {
+              cyan: '#06b6d4',
+              violet: '#8b5cf6',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+            },
             surface: {
               800: '#1e293b',
+              850: '#151f32',
               900: '#0f172a',
-              950: '#020617',
+              950: '#070b14',
             }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           }
         }
       }
     }
   </script>
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Confetti -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #070b14;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
     .mono { font-family: 'JetBrains Mono', monospace; }
-    .glass {
-      background: rgba(15, 23, 42, 0.75);
+
+    /* Ultra-sleek Glassmorphism */
+    .glass-nav {
+      background: rgba(11, 15, 25, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(18, 26, 43, 0.65);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
-    .glass-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
     }
+
+    .glass-card-interactive {
+      background: rgba(18, 26, 43, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card-interactive:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 14px 35px -8px rgba(16, 185, 129, 0.15);
+    }
+
+    /* Custom Scrollbars */
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 9999px; }
-    .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25); }
-    .glow-cyan { box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25); }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(7, 11, 20, 0.6); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.45); }
+
+    /* Glow utilities */
+    .glow-emerald { box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.25); }
+    .glow-cyan { box-shadow: 0 0 30px -5px rgba(6, 182, 212, 0.25); }
+    .glow-violet { box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.25); }
+    .glow-amber { box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.25); }
+
+    /* Bank Card styling */
+    .bank-card-gradient-hdfc {
+      background: linear-gradient(135deg, #0d2240 0%, #173b6c 50%, #0d2240 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .bank-card-gradient-sbi {
+      background: linear-gradient(135deg, #093739 0%, #155b5f 50%, #093739 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .bank-card-gradient-icici {
+      background: linear-gradient(135deg, #421818 0%, #752929 50%, #421818 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Pulse animation */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6)); }
+      50% { opacity: 0.6; filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.2)); }
+    }
+    .pulse-glow { animation: pulse-glow 2.5s infinite; }
   </style>
 </head>
-<body class="bg-surface-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black custom-scroll">
+<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black custom-scroll">
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="sticky top-0 z-40 glass border-b border-slate-800/80">
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- TOP APP NAVIGATION BAR -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <header class="sticky top-0 z-40 glass-nav">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-black font-extrabold text-lg shadow-lg shadow-emerald-500/20">
-          Ω
+      
+      <!-- Brand & Engine Heartbeat -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 p-[1px] shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-300">
+          <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+            <span class="text-emerald-400 font-extrabold text-lg">Ω</span>
+          </div>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">LIFEOS</span>
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v0.1.0</span>
+            <span class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">LIFEOS</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">v0.2.0</span>
           </div>
-          <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Indian Household Decision Engine</p>
+          <div class="flex items-center space-x-1.5 text-[10px] text-slate-400 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-glow"></span>
+            <span>Stateful Decision Engine</span>
+            <span class="text-slate-600">•</span>
+            <span class="text-emerald-400/90 font-mono">0.2ms ML Core</span>
+          </div>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav id="nav-tabs" class="hidden md:flex items-center space-x-1 p-1 bg-slate-900/80 rounded-xl border border-slate-800">
-        <button onclick="switchTab('dashboard')" class="tab-btn active px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-emerald-400 bg-slate-800 shadow" data-tab="dashboard">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+      <!-- Main Navigation Dock (Desktop) -->
+      <nav id="nav-tabs" class="hidden xl:flex items-center space-x-1 p-1 bg-slate-900/90 rounded-2xl border border-slate-800/90 shadow-inner">
+        <button onclick="switchTab('dashboard')" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all text-emerald-400 bg-slate-800/90 shadow" data-tab="dashboard">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
           <span>Dashboard</span>
         </button>
-        <button onclick="switchTab('transactions')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="transactions">
-          <i data-lucide="receipt" class="w-4 h-4"></i>
+        <button onclick="switchTab('transactions')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="transactions">
+          <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
           <span>Expenses</span>
         </button>
-        <button onclick="switchTab('simulator')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="simulator">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
-          <span>Decision Simulator</span>
+        <button onclick="switchTab('simulator')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="simulator">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>Simulator</span>
         </button>
-        <button onclick="switchTab('agent')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="agent">
-          <i data-lucide="bot" class="w-4 h-4"></i>
-          <span>AI Assistant</span>
+        <button onclick="switchTab('agent')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="agent">
+          <i data-lucide="bot" class="w-3.5 h-3.5 text-violet-400"></i>
+          <span>AI Copilot</span>
         </button>
-        <button onclick="switchTab('goals')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="goals">
-          <i data-lucide="target" class="w-4 h-4"></i>
+        <button onclick="switchTab('goals')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="goals">
+          <i data-lucide="target" class="w-3.5 h-3.5"></i>
           <span>Goals</span>
         </button>
-        <button onclick="switchTab('risk')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="risk">
-          <i data-lucide="shield-alert" class="w-4 h-4"></i>
+        <button onclick="switchTab('risk')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="risk">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
           <span>Risk & Stress</span>
         </button>
-        <button onclick="switchTab('obligations')" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="obligations">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          <span>Obligations</span>
+        <button onclick="switchTab('obligations')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="obligations">
+          <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+          <span>Horizons</span>
+        </button>
+        <button onclick="switchTab('accounts')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="accounts">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+          <span>Accounts</span>
         </button>
       </nav>
 
-      <!-- Auth & Actions -->
-      <div class="flex items-center space-x-3">
-        <div id="user-pill" class="hidden items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 text-xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="user-name" class="font-medium text-slate-200">Priya Sharma</span>
-          <button onclick="logout()" title="Logout" class="text-slate-400 hover:text-rose-400 ml-1 transition">
+      <!-- Right Action Bar: Demo Quick-Switch & User Profile -->
+      <div class="flex items-center space-x-2.5">
+        <!-- 1-Click Demo Toggle Button -->
+        <button onclick="loginDemoAccount()" title="Load Priya Sharma verified demo household data" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition group">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform"></i>
+          <span>Instant Demo</span>
+        </button>
+
+        <!-- User Profile Pill -->
+        <div id="user-pill" class="hidden items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs">
+          <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-bold text-[10px]" id="user-avatar">
+            PS
+          </div>
+          <span id="user-name" class="font-semibold text-slate-200">Priya Sharma</span>
+          <button onclick="logout()" title="Logout" class="text-slate-400 hover:text-rose-400 p-0.5 transition">
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
           </button>
         </div>
-        <button id="auth-btn" onclick="openAuthModal()" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/10">
+
+        <!-- Sign In Button (When logged out) -->
+        <button id="auth-btn" onclick="openAuthModal()" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/20">
           <i data-lucide="user" class="w-3.5 h-3.5"></i>
-          <span>Sign In / Demo</span>
+          <span>Sign In / Register</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button onclick="toggleMobileMenu()" class="xl:hidden p-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700">
+          <i data-lucide="menu" class="w-4 h-4"></i>
         </button>
       </div>
+
+    </div>
+
+    <!-- Mobile Drawer Navigation -->
+    <div id="mobile-nav-menu" class="hidden xl:hidden px-4 pt-2 pb-4 bg-slate-950/95 border-b border-slate-800 space-y-1">
+      <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-400"></i>
+        <span>Dashboard</span>
+      </button>
+      <button onclick="switchTab('transactions'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="receipt" class="w-4 h-4 text-cyan-400"></i>
+        <span>Expenses & ML Predictor</span>
+      </button>
+      <button onclick="switchTab('simulator'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+        <span>Can I Afford It? Simulator</span>
+      </button>
+      <button onclick="switchTab('agent'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="bot" class="w-4 h-4 text-violet-400"></i>
+        <span>Grounded AI Copilot</span>
+      </button>
+      <button onclick="switchTab('goals'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="target" class="w-4 h-4 text-emerald-400"></i>
+        <span>Goals & Milestones</span>
+      </button>
+      <button onclick="switchTab('risk'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
+        <span>5-Pillar Risk & Stress Tests</span>
+      </button>
+      <button onclick="switchTab('obligations'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
+        <span>Contractual Horizons</span>
+      </button>
+      <button onclick="switchTab('accounts'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="credit-card" class="w-4 h-4 text-teal-400"></i>
+        <span>Bank Accounts & Wallets</span>
+      </button>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- MAIN APPLICATION CONTENT CONTAINER -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 1: DASHBOARD -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-dashboard" class="tab-content space-y-6">
-      <!-- HERO METRICS ROW -->
+      
+      <!-- HERO BENTO METRIC CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Liquid Cash -->
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition">
+        
+        <!-- Metric 1: Liquid Net Worth -->
+        <div class="glass-card-interactive rounded-2xl p-5 relative overflow-hidden">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Liquid Cash Balance</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Liquid Net Worth</span>
             <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <i data-lucide="wallet" class="w-4 h-4"></i>
             </div>
           </div>
-          <div id="stat-balance" class="text-2xl sm:text-3xl font-extrabold text-white mt-3 mono">₹3,80,000.00</div>
-          <div class="text-[11px] text-slate-400 mt-2 flex items-center space-x-1">
-            <span class="text-emerald-400 font-semibold flex items-center"><i data-lucide="check" class="w-3 h-3 mr-0.5"></i>Primary HDFC</span>
-            <span>• Bank savings & FD liquid</span>
+          <div id="stat-balance" class="text-2xl sm:text-3xl font-extrabold text-white mt-3 mono tracking-tight">₹3,80,000.00</div>
+          <div class="text-[11px] text-slate-400 mt-2.5 flex items-center justify-between">
+            <span class="text-emerald-400 font-semibold flex items-center">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 mr-0.5"></i>+14.2% MoM
+            </span>
+            <span class="text-slate-400">HDFC & FD Liquid</span>
           </div>
         </div>
 
-        <!-- Emergency Runway -->
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition">
+        <!-- Metric 2: Emergency Runway Gauge -->
+        <div class="glass-card-interactive rounded-2xl p-5 relative overflow-hidden">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Emergency Runway</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Emergency Runway</span>
             <div id="runway-badge-icon" class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <i data-lucide="hourglass" class="w-4 h-4"></i>
             </div>
           </div>
           <div class="flex items-baseline space-x-2 mt-3">
             <div id="stat-runway" class="text-2xl sm:text-3xl font-extrabold text-white mono">8.1</div>
-            <span class="text-sm font-semibold text-slate-400">Months</span>
+            <span class="text-sm font-bold text-slate-400">Months</span>
           </div>
-          <div class="text-[11px] text-slate-400 mt-2 flex items-center justify-between">
-            <span id="runway-status" class="text-emerald-400 font-semibold">🟢 Healthy Safety Net</span>
-            <span>Target: 6.0 mo</span>
+          <div class="text-[11px] text-slate-400 mt-2.5 flex items-center justify-between">
+            <span id="runway-status" class="text-emerald-400 font-semibold flex items-center">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i>Healthy Safety Net
+            </span>
+            <span class="text-slate-500">Target: 6.0 mo</span>
           </div>
         </div>
 
-        <!-- Monthly Savings Rate -->
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition">
+        <!-- Metric 3: Monthly Savings Rate -->
+        <div class="glass-card-interactive rounded-2xl p-5 relative overflow-hidden">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Monthly Savings Rate</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Savings Rate</span>
             <div class="p-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20">
               <i data-lucide="trending-up" class="w-4 h-4"></i>
             </div>
           </div>
           <div id="stat-savings-rate" class="text-2xl sm:text-3xl font-extrabold text-white mt-3 mono">60.8%</div>
-          <div class="text-[11px] text-slate-400 mt-2 flex items-center justify-between">
-            <span id="stat-income-burn">In: ₹1.20L | Burn: ₹47k</span>
-            <span class="text-violet-400 font-semibold">+₹73k/mo</span>
+          <div class="text-[11px] text-slate-400 mt-2.5 flex items-center justify-between">
+            <span id="stat-income-burn" class="text-slate-300">In: ₹1.20L | Burn: ₹47k</span>
+            <span class="text-emerald-400 font-bold font-mono">+₹73k/mo</span>
           </div>
         </div>
 
-        <!-- Risk Grade -->
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition">
+        <!-- Metric 4: Risk Grade & DTI -->
+        <div class="glass-card-interactive rounded-2xl p-5 relative overflow-hidden">
           <div class="flex justify-between items-start">
-            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Household Risk Grade</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Household Risk</span>
             <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <i data-lucide="shield" class="w-4 h-4"></i>
             </div>
           </div>
           <div class="flex items-center space-x-3 mt-3">
             <div id="stat-risk-grade" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mono">Grade A</div>
-            <span id="stat-risk-score" class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">19/100</span>
+            <span id="stat-risk-score" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">19/100</span>
           </div>
-          <div class="text-[11px] text-slate-400 mt-2 flex items-center justify-between">
-            <span id="stat-dti">DTI: 12.1% (Safe)</span>
-            <span class="text-slate-400">5-Pillar Score</span>
+          <div class="text-[11px] text-slate-400 mt-2.5 flex items-center justify-between">
+            <span id="stat-dti" class="text-slate-300 font-medium">DTI: 12.1% (Safe)</span>
+            <span class="text-emerald-400 font-semibold">5-Pillar Solvency</span>
           </div>
         </div>
+
       </div>
 
-      <!-- INSIGHT BANNERS: "WHAT CHANGED?" & "WHAT AM I FORGETTING?" -->
+      <!-- EXECUTIVE INTELLIGENCE BRIEFING: "WHAT CHANGED?" & "WHAT AM I FORGETTING?" -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <!-- What Changed -->
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500">
-          <div class="flex items-center justify-between mb-2">
+        
+        <!-- Card 1: What Changed -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 relative">
+          <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center space-x-2">
-              <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
-              <h3 class="text-sm font-bold text-white uppercase tracking-wider">What Changed Since Last Month?</h3>
+              <div class="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+                <i data-lucide="activity" class="w-4 h-4"></i>
+              </div>
+              <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">What Changed Since Last Month?</h3>
             </div>
-            <button onclick="recomputeLifeState()" class="text-[11px] text-cyan-400 hover:underline flex items-center space-x-1">
+            <button onclick="recomputeLifeState()" title="Recompute life state from latest transactions" class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-[11px] font-semibold text-cyan-400 border border-slate-700/80 flex items-center space-x-1 transition">
               <i data-lucide="refresh-cw" class="w-3 h-3"></i>
               <span>Recompute</span>
             </button>
           </div>
           <div id="what-changed-text" class="text-xs text-slate-300 leading-relaxed">
-            Your emergency runway improved by <strong>+0.5 months</strong> following consistent salary credit. Fixed expenses remained stable at ₹47,000/mo.
+            Your emergency runway improved by <strong class="text-emerald-400">+0.5 months</strong> following consistent salary credit. Fixed expenses remained stable at ₹47,000/mo with ₹73,000 retained surplus.
           </div>
         </div>
 
-        <!-- What Am I Forgetting -->
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500">
-          <div class="flex items-center justify-between mb-2">
+        <!-- Card 2: What Am I Forgetting -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 relative">
+          <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center space-x-2">
-              <i data-lucide="bell" class="w-4 h-4 text-amber-400"></i>
-              <h3 class="text-sm font-bold text-white uppercase tracking-wider">What Am I Forgetting?</h3>
+              <div class="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                <i data-lucide="bell-ring" class="w-4 h-4"></i>
+              </div>
+              <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">What Am I Forgetting? (Next 30 Days)</h3>
             </div>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">Next 30 Days</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/25 font-bold uppercase tracking-wider">Radar</span>
           </div>
           <div id="what-forgetting-text" class="text-xs text-slate-300 leading-relaxed">
-            ⚠️ <strong>HDFC Car Loan EMI (₹14,500)</strong> auto-debit scheduled in 10 days. Ensure HDFC account balance remains above contractual limit.
+            ⚠️ <strong class="text-white">HDFC Car Loan EMI (₹14,500)</strong> auto-debit scheduled in 10 days. Ensure primary bank balance remains above contractual limit.
           </div>
         </div>
+
       </div>
 
-      <!-- CHART & RECENT ACTIVITY -->
+      <!-- INTERACTIVE CHARTS & QUICK ACTION CENTER -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Visual Chart -->
-        <div class="glass-card rounded-2xl p-5 lg:col-span-2">
-          <div class="flex items-center justify-between mb-4">
+        
+        <!-- Chart: Monthly Cashflow Dynamics -->
+        <div class="glass-card rounded-2xl p-6 lg:col-span-2">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
             <div>
-              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Monthly Cashflow Dynamic</h3>
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Monthly Cashflow Dynamics</h3>
               <p class="text-xs text-slate-400">Income vs Living Expenses vs Net Retained Surplus</p>
             </div>
-            <div class="flex items-center space-x-2 text-xs">
-              <span class="flex items-center text-emerald-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1"></span>Income</span>
-              <span class="flex items-center text-rose-400"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 mr-1"></span>Expenses</span>
+            <div class="flex items-center space-x-3 text-xs">
+              <span class="flex items-center text-emerald-400 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1.5"></span>Income</span>
+              <span class="flex items-center text-rose-400 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 mr-1.5"></span>Burn</span>
+              <span class="flex items-center text-cyan-400 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-cyan-500 mr-1.5"></span>Surplus</span>
             </div>
           </div>
-          <div class="h-64 relative">
+          <div class="h-64 sm:h-72 relative">
             <canvas id="cashflowChart"></canvas>
           </div>
         </div>
 
-        <!-- Quick Actions & Alerts -->
+        <!-- Quick Launchers & Top Goal Bento -->
         <div class="space-y-4">
+          
+          <!-- Quick Action Buttons -->
           <div class="glass-card rounded-2xl p-5">
-            <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Quick Actions</h3>
+            <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Quick Actions</h3>
             <div class="grid grid-cols-2 gap-2.5">
-              <button onclick="switchTab('transactions'); document.getElementById('txn-description').focus();" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-left transition group">
-                <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-400 mb-1 group-hover:scale-110 transition"></i>
-                <div class="text-xs font-semibold text-white">Add Expense</div>
+              <button onclick="switchTab('transactions'); document.getElementById('txn-description').focus();" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Add Expense</div>
                 <div class="text-[10px] text-slate-400">With ML Predict</div>
               </button>
-              <button onclick="switchTab('simulator')" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-left transition group">
-                <i data-lucide="calculator" class="w-5 h-5 text-cyan-400 mb-1 group-hover:scale-110 transition"></i>
-                <div class="text-xs font-semibold text-white">Can I Afford?</div>
+              
+              <button onclick="switchTab('simulator')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="sparkles" class="w-5 h-5 text-cyan-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Can I Afford?</div>
                 <div class="text-[10px] text-slate-400">Cash vs EMI</div>
               </button>
-              <button onclick="switchTab('agent')" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-left transition group">
-                <i data-lucide="bot" class="w-5 h-5 text-violet-400 mb-1 group-hover:scale-110 transition"></i>
-                <div class="text-xs font-semibold text-white">Ask AI Agent</div>
+              
+              <button onclick="switchTab('agent')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="bot" class="w-5 h-5 text-violet-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Ask AI Agent</div>
                 <div class="text-[10px] text-slate-400">0% Hallucination</div>
               </button>
-              <button onclick="recomputeLifeState()" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-left transition group">
-                <i data-lucide="refresh-cw" class="w-5 h-5 text-amber-400 mb-1 group-hover:rotate-180 transition"></i>
-                <div class="text-xs font-semibold text-white">Sync Engine</div>
-                <div class="text-[10px] text-slate-400">Update State</div>
+              
+              <button onclick="switchTab('risk')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Stress Test</div>
+                <div class="text-[10px] text-slate-400">5 Macro Shocks</div>
               </button>
             </div>
           </div>
 
-          <!-- Active Goals Summary -->
+          <!-- Top Milestone Goal Card -->
           <div class="glass-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Top Goal</h3>
-              <button onclick="switchTab('goals')" class="text-xs text-emerald-400 hover:underline">View All</button>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Top Goal Progress</h3>
+              <button onclick="switchTab('goals')" class="text-xs text-emerald-400 hover:underline font-semibold">View All</button>
             </div>
             <div id="dashboard-top-goal">
-              <div class="flex justify-between text-xs font-medium mb-1.5">
+              <div class="flex justify-between text-xs font-bold mb-1.5">
                 <span class="text-slate-200">Emergency Fund (6 Months)</span>
-                <span class="text-emerald-400 font-bold mono">60.0%</span>
+                <span class="text-emerald-400 mono">60.0%</span>
               </div>
-              <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                <div class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2.5 rounded-full" style="width: 60%"></div>
+              <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
+                <div class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-full rounded-full" style="width: 60%"></div>
               </div>
-              <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+              <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-mono">
                 <span>Accumulated: ₹1,80,000</span>
                 <span>Target: ₹3,00,000</span>
               </div>
             </div>
           </div>
+
         </div>
+
       </div>
+
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 2: EXPENSES & TRANSACTIONS (WITH REAL-TIME ML PREDICT) -->
+    <!-- TAB 2: EXPENSES & REAL-TIME ML CATEGORY DETECTIVE -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-transactions" class="tab-content hidden space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 class="text-xl font-extrabold text-white">Expense & Transaction Intelligence</h2>
-          <p class="text-xs text-slate-400">Log new transactions with real-time ML category prediction or import bank CSVs</p>
+          <h2 class="text-2xl font-extrabold text-white tracking-tight">Expense & Transaction Intelligence</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Log transactions with real-time ML category prediction or import bank statement CSVs</p>
         </div>
         <div class="flex space-x-2">
-          <button onclick="document.getElementById('csv-upload-input').click()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 flex items-center space-x-1.5 transition">
+          <button onclick="document.getElementById('csv-upload-input').click()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 flex items-center space-x-2 transition shadow">
             <i data-lucide="upload" class="w-3.5 h-3.5"></i>
             <span>Upload Bank CSV</span>
           </button>
@@ -323,39 +492,64 @@
       </div>
 
       <!-- ADD TRANSACTION FORM (REAL-TIME ML PREDICTOR) -->
-      <div class="glass-card rounded-2xl p-6 border border-emerald-500/20 glow-emerald">
-        <div class="flex items-center space-x-2 mb-4">
-          <div class="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+      <div class="glass-card rounded-3xl p-6 border border-emerald-500/25 glow-emerald relative">
+        <div class="flex items-center space-x-2.5 mb-4">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
             <i data-lucide="plus" class="w-4 h-4"></i>
           </div>
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Record Transaction / Expense</h3>
+          <div>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Record Transaction</h3>
+            <p class="text-[11px] text-slate-400">Type any Indian merchant or narration — ML categorizes it instantly with sub-millisecond inference</p>
+          </div>
+        </div>
+
+        <!-- One-Click Preset Chips for Live Demo -->
+        <div class="mb-4 flex items-center space-x-2 overflow-x-auto pb-1 text-xs custom-scroll">
+          <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex-shrink-0">Quick Presets:</span>
+          <button type="button" onclick="fillPresetTxn('Swiggy gourmet dinner order', 850, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
+            🍔 Swiggy ₹850
+          </button>
+          <button type="button" onclick="fillPresetTxn('Bharat Petroleum diesel auto-fuel debit', 2400, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
+            ⛽ BPCL Fuel ₹2.4k
+          </button>
+          <button type="button" onclick="fillPresetTxn('Star Health insurance premium annual renewal', 15000, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
+            🏥 Star Health ₹15k
+          </button>
+          <button type="button" onclick="fillPresetTxn('HDFC home loan auto-debit EMI', 28500, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
+            🏠 HDFC Loan ₹28.5k
+          </button>
+          <button type="button" onclick="fillPresetTxn('Infosys tech monthly salary credited', 120000, 'credit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-emerald-400 flex-shrink-0 transition font-semibold">
+            💼 Salary ₹1.20L
+          </button>
         </div>
 
         <form id="add-transaction-form" onsubmit="handleAddTransaction(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4">
+          
           <!-- Narration / Description with live ML prediction listener -->
           <div class="lg:col-span-5 relative">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Narration / Bank String</label>
-            <input type="text" id="txn-description" required placeholder="e.g. Swiggy order Bangalore, BESCOM electricity bill, HDFC EMI" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Narration / Merchant String</label>
+            <input type="text" id="txn-description" required placeholder="e.g. Swiggy order Pune, BESCOM power, LIC insurance premium" 
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
               oninput="handleNarrationInput(this.value)">
+            
             <!-- Real-time ML Prediction Badge -->
-            <div id="ml-prediction-badge" class="hidden absolute right-2 top-8 items-center space-x-1.5 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-[10px]">
-              <i data-lucide="sparkles" class="w-3 h-3 text-emerald-400"></i>
+            <div id="ml-prediction-badge" class="hidden absolute right-3 top-9 items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 text-[11px] font-semibold backdrop-blur-md">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400 animate-pulse"></i>
               <span id="ml-badge-text">ML: Food & Dining (96%)</span>
             </div>
           </div>
 
           <!-- Amount -->
           <div class="lg:col-span-2">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Amount (₹)</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Amount (₹)</label>
             <input type="number" id="txn-amount" step="0.01" min="0.01" required placeholder="1499.00" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition mono">
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition mono shadow-inner">
           </div>
 
           <!-- Type (Debit / Credit) -->
           <div class="lg:col-span-2">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Type</label>
-            <select id="txn-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Type</label>
+            <select id="txn-type" class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
               <option value="debit">🔴 Expense (Debit)</option>
               <option value="credit">🟢 Income (Credit)</option>
             </select>
@@ -363,36 +557,37 @@
 
           <!-- Category (Auto-selected by ML or manually chosen) -->
           <div class="lg:col-span-3">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Category</label>
-            <select id="txn-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Category</label>
+            <select id="txn-category" class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
               <option value="">Auto-detected by ML</option>
             </select>
           </div>
 
           <!-- Submit Button -->
-          <div class="lg:col-span-12 flex justify-end">
-            <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs flex items-center space-x-2 transition shadow-md shadow-emerald-500/20">
-              <i data-lucide="check" class="w-4 h-4"></i>
-              <span>Save & Update Life State</span>
+          <div class="lg:col-span-12 flex justify-end pt-2">
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs flex items-center space-x-2 transition shadow-lg shadow-emerald-500/20">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Save & Recompute Life State</span>
             </button>
           </div>
         </form>
       </div>
 
       <!-- TRANSACTION LEDGER TABLE -->
-      <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
-        <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div class="flex items-center space-x-2">
-            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Transaction Ledger</h3>
-            <span id="ledger-count" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">0 records</span>
+      <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
+        <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div class="flex items-center space-x-3">
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Transaction Ledger</h3>
+            <span id="ledger-count" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-mono font-semibold">0 records</span>
           </div>
-          <div class="flex items-center space-x-2 w-full sm:w-auto">
-            <div class="relative w-full sm:w-64">
-              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
-              <input type="text" id="ledger-search" placeholder="Filter merchant/narration..." oninput="filterLedger(this.value)"
-                class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-slate-700">
+          
+          <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+            <div class="relative w-full sm:w-72">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+              <input type="text" id="ledger-search" placeholder="Filter merchant or category..." oninput="filterLedger(this.value)"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-slate-600 transition">
             </div>
-            <button onclick="fetchTransactions()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">
+            <button onclick="fetchTransactions()" title="Refresh Ledger" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
               <i data-lucide="refresh-cw" class="w-4 h-4"></i>
             </button>
           </div>
@@ -400,18 +595,17 @@
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
-            <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead class="bg-slate-950/70 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800/80">
               <tr>
-                <th class="py-3 px-4">Date</th>
-                <th class="py-3 px-4">Narration / Merchant</th>
-                <th class="py-3 px-4">Category</th>
-                <th class="py-3 px-4 text-right">Amount (₹)</th>
-                <th class="py-3 px-4 text-center">Status</th>
+                <th class="py-3.5 px-5">Date</th>
+                <th class="py-3.5 px-5">Narration / Merchant</th>
+                <th class="py-3.5 px-5">Category</th>
+                <th class="py-3.5 px-5 text-right">Amount (₹)</th>
+                <th class="py-3.5 px-5 text-center">Status</th>
               </tr>
             </thead>
-            <tbody id="transactions-table-body" class="divide-y divide-slate-800/60 font-normal">
-              <!-- Populated dynamically via JS -->
-              <tr><td colspan="5" class="py-8 text-center text-slate-500">Loading verified ledger entries...</td></tr>
+            <tbody id="transactions-table-body" class="divide-y divide-slate-800/50">
+              <tr><td colspan="5" class="py-10 text-center text-slate-500 font-medium">Loading ledger entries...</td></tr>
             </tbody>
           </table>
         </div>
@@ -419,43 +613,63 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 3: DECISION SIMULATOR ("CAN I AFFORD X?") -->
+    <!-- TAB 3: DECISION SIMULATOR ("CAN I AFFORD IT?") -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-simulator" class="tab-content hidden space-y-6">
       <div>
-        <h2 class="text-xl font-extrabold text-white">Decision Simulator & Multi-Path Optimization</h2>
-        <p class="text-xs text-slate-400">Ask "Can I afford X?" and compare Cash vs EMI vs Delay across liquid runway and DTI</p>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Decision Simulator & Affordability Matrix</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Evaluate big-ticket purchases across liquid runway, monthly cashflow, and DTI debt risk</p>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs custom-scroll">
+        <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex-shrink-0">Simulate Preset:</span>
+        <button type="button" onclick="setSimPreset('MacBook Pro M3 Max', 199900, 12, 13.5)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
+          💻 MacBook Pro (₹1.99L)
+        </button>
+        <button type="button" onclick="setSimPreset('iPhone 16 Pro 256GB', 129900, 12, 14.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
+          📱 iPhone 16 Pro (₹1.30L)
+        </button>
+        <button type="button" onclick="setSimPreset('Ola S1 Pro Gen 2 Scooter', 134900, 18, 12.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
+          🛵 Ola EV Scooter (₹1.35L)
+        </button>
+        <button type="button" onclick="setSimPreset('Bali International Vacation', 120000, 6, 15.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
+          🏖️ Bali Holiday (₹1.20L)
+        </button>
+        <button type="button" onclick="setSimPreset('Sony Alpha A7 IV Mirrorless Camera', 120000, 12, 13.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
+          📷 Sony Camera (₹1.20L)
+        </button>
       </div>
 
       <!-- SIMULATION INPUT FORM -->
-      <div class="glass-card rounded-2xl p-6 border border-cyan-500/20 glow-cyan">
+      <div class="glass-card rounded-3xl p-6 border border-cyan-500/25 glow-cyan">
         <form onsubmit="handleRunSimulation(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Purchase Item / Title</label>
-            <input type="text" id="sim-title" required value="MacBook Pro M3 Max" placeholder="e.g. iPhone 16 Pro, Ola S1 Pro Scooter" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Purchase Item / Title</label>
+            <input type="text" id="sim-title" required value="MacBook Pro M3 Max" placeholder="e.g. iPhone 16 Pro, Ola S1 Pro" 
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Price / Cost (₹)</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Price / Cost (₹)</label>
             <input type="number" id="sim-amount" required value="199900" step="100" min="500" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition mono">
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition mono">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">EMI Tenure (Months)</label>
-            <select id="sim-emi-months" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">EMI Financing Tenure</label>
+            <select id="sim-emi-months" class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
               <option value="6">6 Months</option>
-              <option value="12" selected>12 Months (Recommended)</option>
+              <option value="12" selected>12 Months (Standard)</option>
               <option value="18">18 Months</option>
               <option value="24">24 Months</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">EMI Interest Rate (% p.a.)</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">EMI Interest Rate (% p.a.)</label>
             <input type="number" id="sim-interest" step="0.1" value="13.5" min="0" max="36" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition mono">
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition mono">
           </div>
-          <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
-            <button type="submit" id="sim-submit-btn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:opacity-90 text-black font-extrabold text-xs flex items-center space-x-2 transition shadow-lg shadow-cyan-500/20">
+          <div class="sm:col-span-2 lg:col-span-4 flex justify-end pt-2">
+            <button type="submit" id="sim-submit-btn" class="px-7 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center space-x-2 transition shadow-xl shadow-cyan-500/25">
               <i data-lucide="play" class="w-4 h-4"></i>
               <span>Simulate All 3 Scenarios</span>
             </button>
@@ -463,153 +677,160 @@
         </form>
       </div>
 
-      <!-- RECOMMENDATION BOX -->
+      <!-- RECOMMENDATION BANNER -->
       <div id="sim-recommendation-card" class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500 bg-emerald-950/20">
-        <div class="flex items-center space-x-2 mb-2">
-          <i data-lucide="award" class="w-5 h-5 text-emerald-400"></i>
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Mathematical Recommendation</h3>
+        <div class="flex items-center space-x-2.5 mb-2">
+          <div class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Mathematical Recommendation</h3>
         </div>
         <p id="sim-rec-text" class="text-xs text-slate-200 leading-relaxed font-medium">
-          Run a simulation to generate a personalized mathematical recommendation.
+          Run a simulation to generate an objective mathematical decision verdict.
         </p>
       </div>
 
       <!-- 3 SCENARIO PATHS GRID -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="sim-paths-grid">
+        
         <!-- Path 1: Cash -->
-        <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+        <div class="glass-card rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Path 1: Pay Cash Upfront</span>
-              <span class="p-1.5 rounded-lg bg-slate-800 text-slate-400"><i data-lucide="coins" class="w-4 h-4"></i></span>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-extrabold text-slate-300 uppercase tracking-wider">Path 1: 100% Cash Upfront</span>
+              <span class="p-2 rounded-xl bg-slate-800 text-slate-400"><i data-lucide="coins" class="w-4 h-4"></i></span>
             </div>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3.5 text-xs">
               <div>
                 <div class="text-slate-400">Liquid Cash Remaining:</div>
-                <div id="path1-balance" class="text-lg font-bold text-white mono">₹1,80,100.00</div>
+                <div id="path1-balance" class="text-lg font-bold text-white mono mt-0.5">₹1,80,100.00</div>
               </div>
               <div>
                 <div class="text-slate-400">Emergency Runway:</div>
-                <div id="path1-runway" class="text-lg font-bold text-amber-400 mono">3.8 Months</div>
+                <div id="path1-runway" class="text-lg font-bold text-amber-400 mono mt-0.5">3.8 Months</div>
               </div>
               <div>
                 <div class="text-slate-400">Monthly Cashflow Impact:</div>
-                <div class="text-sm font-semibold text-slate-300">₹0.00/mo</div>
+                <div class="text-sm font-semibold text-slate-300 mt-0.5">₹0.00/mo (No EMI)</div>
               </div>
             </div>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">
-            Reserves drop significantly; safety net reduced below 6-month buffer.
+          <div class="mt-5 pt-3.5 border-t border-slate-800/80 text-[11px] text-slate-400">
+            Reserves drop immediately; emergency buffer reduces below safe 6-month threshold.
           </div>
         </div>
 
         <!-- Path 2: EMI -->
-        <div class="glass-card rounded-2xl p-5 border-2 border-emerald-500/40 glow-emerald flex flex-col justify-between relative">
-          <div class="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-500 text-black text-[10px] font-extrabold uppercase">
-            Best Balance
+        <div class="glass-card rounded-3xl p-6 border-2 border-emerald-500/50 glow-emerald flex flex-col justify-between relative">
+          <div class="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider shadow">
+            Balanced Path
           </div>
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Path 2: EMI Financing</span>
-              <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400"><i data-lucide="credit-card" class="w-4 h-4"></i></span>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">Path 2: EMI Financing</span>
+              <span class="p-2 rounded-xl bg-emerald-500/15 text-emerald-400"><i data-lucide="credit-card" class="w-4 h-4"></i></span>
             </div>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3.5 text-xs">
               <div>
                 <div class="text-slate-400">Liquid Cash Remaining:</div>
-                <div id="path2-balance" class="text-lg font-bold text-white mono">₹3,80,000.00</div>
+                <div id="path2-balance" class="text-lg font-bold text-white mono mt-0.5">₹3,80,000.00</div>
               </div>
               <div>
                 <div class="text-slate-400">Emergency Runway:</div>
-                <div id="path2-runway" class="text-lg font-bold text-emerald-400 mono">5.9 Months</div>
+                <div id="path2-runway" class="text-lg font-bold text-emerald-400 mono mt-0.5">5.9 Months</div>
               </div>
               <div>
                 <div class="text-slate-400">Monthly Cashflow Impact:</div>
-                <div id="path2-emi" class="text-sm font-bold text-rose-400 mono">-₹17,901.45/mo</div>
+                <div id="path2-emi" class="text-sm font-bold text-rose-400 mono mt-0.5">-₹17,901.45/mo</div>
               </div>
             </div>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">
-            Liquid cash intact; manageable DTI keeps household fully solvent.
+          <div class="mt-5 pt-3.5 border-t border-slate-800/80 text-[11px] text-slate-400">
+            Liquid cash intact; manageable DTI ensures household remains fully solvent.
           </div>
         </div>
 
         <!-- Path 3: Delay -->
-        <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+        <div class="glass-card rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Path 3: Save Up & Delay</span>
-              <span class="p-1.5 rounded-lg bg-slate-800 text-slate-400"><i data-lucide="piggy-bank" class="w-4 h-4"></i></span>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-extrabold text-slate-300 uppercase tracking-wider">Path 3: Save Up & Delay</span>
+              <span class="p-2 rounded-xl bg-slate-800 text-slate-400"><i data-lucide="piggy-bank" class="w-4 h-4"></i></span>
             </div>
-            <div class="space-y-3 text-xs">
+            <div class="space-y-3.5 text-xs">
               <div>
                 <div class="text-slate-400">Liquid Cash Remaining:</div>
-                <div id="path3-balance" class="text-lg font-bold text-white mono">₹3,80,000.00</div>
+                <div id="path3-balance" class="text-lg font-bold text-white mono mt-0.5">₹3,80,000.00</div>
               </div>
               <div>
                 <div class="text-slate-400">Emergency Runway:</div>
-                <div id="path3-runway" class="text-lg font-bold text-emerald-400 mono">8.1 Months</div>
+                <div id="path3-runway" class="text-lg font-bold text-emerald-400 mono mt-0.5">8.1 Months</div>
               </div>
               <div>
-                <div class="text-slate-400">Target Monthly Accumulation:</div>
-                <div id="path3-save" class="text-sm font-bold text-cyan-400 mono">₹66,633/mo (3 mos)</div>
+                <div class="text-slate-400">Monthly Target Accumulation:</div>
+                <div id="path3-save" class="text-sm font-bold text-cyan-400 mono mt-0.5">₹66,633/mo (3 mos)</div>
               </div>
             </div>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">
-            Zero interest cost; purchase made cleanly after short discipline window.
+          <div class="mt-5 pt-3.5 border-t border-slate-800/80 text-[11px] text-slate-400">
+            Zero interest cost; purchase unlocked cleanly after disciplined savings window.
           </div>
         </div>
+
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 4: GROUNDED AI FINANCIAL ASSISTANT -->
+    <!-- TAB 4: GROUNDED AI FINANCIAL COPILOT -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-agent" class="tab-content hidden space-y-4">
       <div>
-        <h2 class="text-xl font-extrabold text-white">Grounded AI Financial Assistant</h2>
-        <p class="text-xs text-slate-400">Natural language decision partner backed by 13 deterministic tools with 0% numerical hallucination</p>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Grounded AI Financial Copilot</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Natural language decision partner backed by 13 deterministic tools with 0% numerical hallucination</p>
       </div>
 
       <!-- CHAT INTERFACE -->
-      <div class="glass-card rounded-2xl flex flex-col h-[520px] overflow-hidden border border-slate-800">
+      <div class="glass-card rounded-3xl flex flex-col h-[550px] overflow-hidden border border-slate-800 shadow-2xl">
+        
         <!-- Messages Area -->
-        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll">
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll">
+          
           <!-- Assistant Welcome -->
           <div class="flex items-start space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0">
-              <i data-lucide="bot" class="w-4 h-4"></i>
+            <div class="w-9 h-9 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0">
+              <i data-lucide="bot" class="w-5 h-5"></i>
             </div>
             <div class="glass-card rounded-2xl p-4 max-w-xl text-xs text-slate-200 leading-relaxed border border-slate-800">
-              <p class="font-bold text-white mb-1">Hello Priya! I'm your grounded LIFEOS Copilot.</p>
+              <p class="font-bold text-white mb-1">Hello! I'm your grounded LIFEOS Financial Copilot.</p>
               <p>I analyze your real accounts, contractual obligations, loans, and emergency runway using deterministic python engines.</p>
               <p class="mt-2 text-slate-400 text-[11px]">Ask me anything about affordability, expense forecasts, debt risk, or upcoming renewals!</p>
             </div>
           </div>
+
         </div>
 
         <!-- Quick Prompt Chips -->
-        <div class="p-3 bg-slate-900/60 border-t border-slate-800 flex items-center space-x-2 overflow-x-auto text-[11px] custom-scroll">
-          <button onclick="sendQuickPrompt('Can I afford to buy a 2 lakh rupee laptop right now?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex-shrink-0 transition">
+        <div class="p-3 bg-slate-950/70 border-t border-slate-800/80 flex items-center space-x-2 overflow-x-auto text-[11px] custom-scroll">
+          <button onclick="sendQuickPrompt('Can I afford to buy a 2 lakh rupee laptop right now?')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             💻 Afford ₹2L laptop?
           </button>
-          <button onclick="sendQuickPrompt('What is my current emergency runway and liquid balance?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex-shrink-0 transition">
+          <button onclick="sendQuickPrompt('What is my current emergency runway and liquid balance?')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             🛡️ What is my runway?
           </button>
-          <button onclick="sendQuickPrompt('What obligations and EMIs do I have coming up in the next 30 days?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex-shrink-0 transition">
+          <button onclick="sendQuickPrompt('What obligations and EMIs do I have coming up in the next 30 days?')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             📅 Upcoming obligations
           </button>
-          <button onclick="sendQuickPrompt('Forecast my expenses for next month with Indian seasonal factors')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex-shrink-0 transition">
+          <button onclick="sendQuickPrompt('Forecast my expenses for next month with Indian seasonal factors')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             📈 Forecast next month
           </button>
         </div>
 
         <!-- Input Box -->
-        <form onsubmit="handleAgentChat(event)" class="p-3 bg-slate-900/90 border-t border-slate-800 flex items-center space-x-2">
-          <input type="text" id="agent-input" placeholder="Ask about expenses, purchases, runway, or loans..." 
-            class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition">
-          <button type="submit" id="agent-send-btn" class="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs flex items-center space-x-1.5 transition">
-            <span>Ask</span>
+        <form onsubmit="handleAgentChat(event)" class="p-3 bg-slate-950 border-t border-slate-800 flex items-center space-x-2">
+          <input type="text" id="agent-input" placeholder="Ask about expenses, purchases, runway, or upcoming EMIs..." 
+            class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition">
+          <button type="submit" id="agent-send-btn" class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs flex items-center space-x-1.5 transition shadow-lg shadow-violet-600/20">
+            <span>Send</span>
             <i data-lucide="send" class="w-3.5 h-3.5"></i>
           </button>
         </form>
@@ -617,15 +838,15 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 5: GOALS & MILESTONES -->
+    <!-- TAB 5: WEALTH GOALS & MILESTONES -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-goals" class="tab-content hidden space-y-6">
-      <div class="flex justify-between items-center">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 class="text-xl font-extrabold text-white">Financial Goals & Milestones</h2>
-          <p class="text-xs text-slate-400">Track target accumulation, emergency funds, and major purchase reserves</p>
+          <h2 class="text-2xl font-extrabold text-white tracking-tight">Wealth Goals & Milestones</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Track target accumulation, emergency funds, and major purchase reserves</p>
         </div>
-        <button onclick="openNewGoalModal()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs flex items-center space-x-1.5 transition">
+        <button onclick="openNewGoalModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-95 text-slate-950 font-bold text-xs flex items-center space-x-1.5 transition shadow-lg shadow-emerald-500/20">
           <i data-lucide="plus" class="w-4 h-4"></i>
           <span>Create New Goal</span>
         </button>
@@ -633,7 +854,7 @@
 
       <!-- GOALS LIST GRID -->
       <div id="goals-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Populated dynamically via JS -->
+        <!-- Dynamically rendered via JS -->
       </div>
     </section>
 
@@ -642,44 +863,44 @@
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-risk" class="tab-content hidden space-y-6">
       <div>
-        <h2 class="text-xl font-extrabold text-white">5-Pillar Risk Engine & Macro Stress Tests</h2>
-        <p class="text-xs text-slate-400">Algorithmic stress testing against income shock, interest rate jumps, medical emergencies, and inflation</p>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">5-Pillar Risk Engine & Macro Stress Tests</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Algorithmic stress testing against income shock, interest rate jumps, medical emergencies, and inflation</p>
       </div>
 
       <!-- 5-PILLAR PILLARS CARDS -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div class="glass-card rounded-xl p-3.5 text-center">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+        <div class="glass-card rounded-2xl p-4 text-center">
           <div class="text-[10px] uppercase font-bold text-slate-400">1. Liquidity</div>
-          <div class="text-base font-extrabold text-emerald-400 mt-1 mono">8.1 mo</div>
-          <div class="text-[10px] text-emerald-300">Runway Safe</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-1 mono">8.1 mo</div>
+          <div class="text-[10px] text-emerald-300 font-medium">Runway Safe</div>
         </div>
-        <div class="glass-card rounded-xl p-3.5 text-center">
+        <div class="glass-card rounded-2xl p-4 text-center">
           <div class="text-[10px] uppercase font-bold text-slate-400">2. Debt-to-Income</div>
-          <div class="text-base font-extrabold text-emerald-400 mt-1 mono">12.1%</div>
-          <div class="text-[10px] text-emerald-300">&lt; 35% Limit</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-1 mono">12.1%</div>
+          <div class="text-[10px] text-emerald-300 font-medium">&lt; 35% Safe Limit</div>
         </div>
-        <div class="glass-card rounded-xl p-3.5 text-center">
+        <div class="glass-card rounded-2xl p-4 text-center">
           <div class="text-[10px] uppercase font-bold text-slate-400">3. Cashflow Margin</div>
-          <div class="text-base font-extrabold text-emerald-400 mt-1 mono">+60.8%</div>
-          <div class="text-[10px] text-emerald-300">Surplus Safe</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-1 mono">+60.8%</div>
+          <div class="text-[10px] text-emerald-300 font-medium">Surplus Safe</div>
         </div>
-        <div class="glass-card rounded-xl p-3.5 text-center">
+        <div class="glass-card rounded-2xl p-4 text-center">
           <div class="text-[10px] uppercase font-bold text-slate-400">4. 30d Obligations</div>
-          <div class="text-base font-extrabold text-emerald-400 mt-1 mono">₹14.5k</div>
-          <div class="text-[10px] text-emerald-300">Coverage &gt; 25x</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-1 mono">₹14.5k</div>
+          <div class="text-[10px] text-emerald-300 font-medium">Coverage &gt; 25x</div>
         </div>
-        <div class="glass-card rounded-xl p-3.5 text-center col-span-2 sm:col-span-1">
-          <div class="text-[10px] uppercase font-bold text-slate-400">5. Concentration</div>
-          <div class="text-base font-extrabold text-emerald-400 mt-1 mono">Low</div>
-          <div class="text-[10px] text-emerald-300">Diversified</div>
+        <div class="glass-card rounded-2xl p-4 text-center col-span-2 sm:col-span-1">
+          <div class="text-[10px] uppercase font-bold text-slate-400">5. Diversification</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-1 mono">Grade A</div>
+          <div class="text-[10px] text-emerald-300 font-medium">Multi-Asset Safe</div>
         </div>
       </div>
 
       <!-- 5 MACRO STRESS SCENARIO CARDS -->
-      <div class="space-y-3">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Automated Macroeconomic Stress Scenarios</h3>
+      <div class="space-y-3.5">
+        <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Automated Macroeconomic Stress Scenarios</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="stress-scenarios-container">
-          <!-- Populated dynamically via JS -->
+          <!-- Dynamically populated via JS -->
         </div>
       </div>
     </section>
@@ -689,63 +910,86 @@
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-obligations" class="tab-content hidden space-y-6">
       <div>
-        <h2 class="text-xl font-extrabold text-white">Upcoming Obligations & Contractual Horizons</h2>
-        <p class="text-xs text-slate-400">Deterministic aggregation of upcoming loan EMIs, insurance renewals, and subscription billing</p>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Upcoming Obligations & Contractual Horizons</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Deterministic aggregation of upcoming loan EMIs, insurance renewals, and subscription billing</p>
       </div>
 
-      <!-- HORIZON CARDS -->
+      <!-- HORIZON SUMMARY CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500">
           <div class="text-xs text-slate-400 uppercase font-semibold">30-Day Obligations</div>
           <div id="horizon-30d" class="text-2xl font-extrabold text-white mt-2 mono">₹14,500.00</div>
-          <div class="text-[11px] text-emerald-400 mt-1">1 upcoming event</div>
+          <div class="text-[11px] text-emerald-400 mt-1 font-medium">1 upcoming auto-debit</div>
         </div>
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500">
           <div class="text-xs text-slate-400 uppercase font-semibold">60-Day Obligations</div>
           <div id="horizon-60d" class="text-2xl font-extrabold text-white mt-2 mono">₹33,000.00</div>
-          <div class="text-[11px] text-cyan-400 mt-1">2 upcoming events</div>
+          <div class="text-[11px] text-cyan-400 mt-1 font-medium">2 upcoming payments</div>
         </div>
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-violet-500">
           <div class="text-xs text-slate-400 uppercase font-semibold">90-Day Obligations</div>
           <div id="horizon-90d" class="text-2xl font-extrabold text-white mt-2 mono">₹47,500.00</div>
-          <div class="text-[11px] text-violet-400 mt-1">3 upcoming events</div>
+          <div class="text-[11px] text-violet-400 mt-1 font-medium">3 upcoming payments</div>
         </div>
       </div>
 
       <!-- EVENTS LIST -->
-      <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Scheduled Payment Calendar</h3>
-          <button onclick="fetchEvents()" class="p-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white">
+      <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Scheduled Payment Calendar</h3>
+          <button onclick="fetchEvents()" title="Refresh Horizons" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
           </button>
         </div>
         <div class="divide-y divide-slate-800/60" id="events-list-container">
-          <!-- Populated dynamically via JS -->
+          <!-- Dynamically populated via JS -->
         </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TAB 8: BANK ACCOUNTS & LIQUID PORTFOLIO (NEW!) -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section id="tab-accounts" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white tracking-tight">Bank Accounts & Liquid Portfolio</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Manage connected bank accounts, credit cards, emergency FDs, and digital wallets</p>
+        </div>
+        <button onclick="openNewAccountModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-95 text-slate-950 font-bold text-xs flex items-center space-x-1.5 transition shadow-lg shadow-emerald-500/20">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Link New Account</span>
+        </button>
+      </div>
+
+      <!-- DIGITAL BANK CARDS GRID -->
+      <div id="accounts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Dynamically rendered via JS -->
       </div>
     </section>
 
   </main>
 
-  <!-- AUTHENTICATION MODAL -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- AUTHENTICATION & DEMO MODAL -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
       <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
       <div class="text-center mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-black font-extrabold text-xl mx-auto shadow-lg shadow-emerald-500/20 mb-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-extrabold text-xl mx-auto shadow-lg shadow-emerald-500/20 mb-3">
           Ω
         </div>
         <h3 class="text-xl font-extrabold text-white">Welcome to LIFEOS</h3>
-        <p class="text-xs text-slate-400 mt-1">Sign in to your household decision engine or try the live demo account</p>
+        <p class="text-xs text-slate-400 mt-1">Sign in with your personal credentials or try the verified demo account</p>
       </div>
 
       <!-- ONE-CLICK DEMO BUTTON -->
       <div class="mb-5">
-        <button onclick="loginDemoAccount()" id="demo-login-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:opacity-95 text-black font-extrabold text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-500/20">
+        <button onclick="loginDemoAccount()" id="demo-login-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-500/25">
           <i data-lucide="zap" class="w-4 h-4"></i>
           <span>Instant Demo Login (Priya Sharma)</span>
         </button>
@@ -759,7 +1003,7 @@
       </div>
 
       <!-- Toggle Sign In vs Register -->
-      <div class="flex p-1 bg-slate-900 rounded-xl mb-4 border border-slate-800">
+      <div class="flex p-1 bg-slate-950 rounded-xl mb-4 border border-slate-800">
         <button onclick="setAuthMode('login')" id="auth-tab-login" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white transition">Sign In</button>
         <button onclick="setAuthMode('register')" id="auth-tab-register" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Register</button>
       </div>
@@ -769,20 +1013,67 @@
         <div id="auth-name-container" class="hidden">
           <label class="block text-xs font-medium text-slate-400 mb-1">Full Name</label>
           <input type="text" id="auth-name" placeholder="Ayush Sharma" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
           <input type="email" id="auth-email" required placeholder="ayush@example.com" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
           <input type="password" id="auth-password" required placeholder="••••••••" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
         </div>
-        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold text-xs transition">
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition">
           Sign In
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- LINK NEW ACCOUNT MODAL -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="account-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeNewAccountModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-5">
+        <h3 class="text-lg font-extrabold text-white">Link New Bank Account / Card</h3>
+        <p class="text-xs text-slate-400 mt-1">Connect your savings account, credit card, or digital wallet</p>
+      </div>
+
+      <form onsubmit="handleCreateAccount(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Account Name</label>
+          <input type="text" id="acc-name" required placeholder="e.g. HDFC Salary Account, ICICI Credit Card" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Account Type</label>
+          <select id="acc-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+            <option value="savings">Savings Account</option>
+            <option value="current">Current Account</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="wallet">Digital Wallet</option>
+            <option value="cash">Cash in Hand</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Bank / Institution Name</label>
+          <input type="text" id="acc-bank" placeholder="e.g. HDFC Bank, SBI, ICICI" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Current Balance (₹)</label>
+          <input type="number" id="acc-balance" required step="1" placeholder="50000" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 mono">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20">
+          Save Account
         </button>
       </form>
     </div>
@@ -791,7 +1082,9 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-  <!-- APPLICATION SCRIPT LOGIC -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- FRONTEND APPLICATION SCRIPT LOGIC -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <script>
     // ─── STATE MANAGEMENT ─────────────────────────────────────────
     const API_BASE = window.location.origin;
@@ -811,10 +1104,16 @@
       if (token) {
         await verifyAndLoadUser();
       } else {
-        // Auto-login to demo account for seamless showcase
+        // Auto-login to demo account for seamless presentation
         await loginDemoAccount();
       }
     });
+
+    // ─── MOBILE DRAWER TOGGLE ────────────────────────────────────
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-nav-menu');
+      menu.classList.toggle('hidden');
+    }
 
     // ─── CHART INITIALIZATION ────────────────────────────────────
     function initChart() {
@@ -822,18 +1121,24 @@
       cashflowChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Oct 2026', 'Nov 2026', 'Dec 2026 (Projected)'],
+          labels: ['Sep 2026', 'Oct 2026', 'Nov 2026', 'Dec 2026 (Projected)'],
           datasets: [
             {
               label: 'Income',
-              data: [120000, 120000, 120000],
-              backgroundColor: 'rgba(16, 185, 129, 0.75)',
+              data: [120000, 120000, 120000, 120000],
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
               borderRadius: 8,
             },
             {
-              label: 'Expenses',
-              data: [47000, 47000, 52000],
-              backgroundColor: 'rgba(244, 63, 94, 0.75)',
+              label: 'Burn',
+              data: [45000, 48000, 47000, 51000],
+              backgroundColor: 'rgba(244, 63, 94, 0.8)',
+              borderRadius: 8,
+            },
+            {
+              label: 'Retained Surplus',
+              data: [75000, 72000, 73000, 69000],
+              backgroundColor: 'rgba(6, 182, 212, 0.8)',
               borderRadius: 8,
             }
           ]
@@ -847,13 +1152,13 @@
           scales: {
             x: {
               grid: { color: 'rgba(255,255,255,0.05)' },
-              ticks: { color: '#94a3b8', font: { size: 10 } }
+              ticks: { color: '#94a3b8', font: { size: 10, family: 'Plus Jakarta Sans' } }
             },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: {
                 color: '#94a3b8',
-                font: { size: 10 },
+                font: { size: 10, family: 'JetBrains Mono' },
                 callback: (v) => '₹' + (v / 1000) + 'k'
               }
             }
@@ -866,7 +1171,7 @@
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active', 'text-emerald-400', 'bg-slate-800', 'shadow');
+        btn.classList.remove('active', 'text-emerald-400', 'bg-slate-800/90', 'shadow');
         btn.classList.add('text-slate-400');
       });
 
@@ -875,7 +1180,7 @@
 
       const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
       if (activeBtn) {
-        activeBtn.classList.add('active', 'text-emerald-400', 'bg-slate-800', 'shadow');
+        activeBtn.classList.add('active', 'text-emerald-400', 'bg-slate-800/90', 'shadow');
         activeBtn.classList.remove('text-slate-400');
       }
 
@@ -884,6 +1189,7 @@
       if (tabId === 'goals') fetchGoals();
       if (tabId === 'risk') fetchRiskAssessment();
       if (tabId === 'obligations') fetchEvents();
+      if (tabId === 'accounts') fetchAccounts();
       if (tabId === 'dashboard') loadDashboardData();
 
       lucide.createIcons();
@@ -998,6 +1304,9 @@
     function updateUserUI() {
       if (currentUser) {
         document.getElementById('user-name').innerText = currentUser.full_name;
+        // Set initials
+        const initials = currentUser.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        document.getElementById('user-avatar').innerText = initials || 'PS';
         document.getElementById('user-pill').classList.remove('hidden');
         document.getElementById('user-pill').classList.add('flex');
         document.getElementById('auth-btn').classList.add('hidden');
@@ -1014,7 +1323,7 @@
         if (!res.ok) return;
         const data = await res.json();
 
-        // Life state
+        // Life state metrics
         if (data.life_state) {
           const ls = data.life_state;
           document.getElementById('stat-balance').innerText = '₹' + Number(ls.total_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -1023,23 +1332,23 @@
           document.getElementById('stat-income-burn').innerText = `In: ₹${(ls.monthly_income/1000).toFixed(0)}k | Burn: ₹${(ls.monthly_expenses/1000).toFixed(0)}k`;
           document.getElementById('stat-risk-score').innerText = `${Number(ls.financial_risk_score).toFixed(0)}/100`;
 
-          // Runway badge
+          // Runway status styling
           const runwayEl = document.getElementById('runway-status');
           if (ls.emergency_runway_months >= 6) {
-            runwayEl.innerHTML = '🟢 Healthy Safety Net';
-            runwayEl.className = 'text-emerald-400 font-semibold';
+            runwayEl.innerHTML = '<i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i>Healthy Safety Net';
+            runwayEl.className = 'text-emerald-400 font-semibold flex items-center';
           } else if (ls.emergency_runway_months >= 3) {
-            runwayEl.innerHTML = '🟡 Moderate Buffer';
-            runwayEl.className = 'text-amber-400 font-semibold';
+            runwayEl.innerHTML = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 mr-1"></i>Moderate Buffer';
+            runwayEl.className = 'text-amber-400 font-semibold flex items-center';
           } else {
-            runwayEl.innerHTML = '🔴 Critical Runway';
-            runwayEl.className = 'text-rose-400 font-semibold';
+            runwayEl.innerHTML = '<i data-lucide="alert-octagon" class="w-3.5 h-3.5 mr-1"></i>Critical Runway';
+            runwayEl.className = 'text-rose-400 font-semibold flex items-center';
           }
+          lucide.createIcons();
         }
 
-        // What changed
+        // Fetch insights
         fetchWhatChanged();
-        // What am I forgetting
         fetchWhatAmIForgetting();
 
       } catch (e) {
@@ -1050,14 +1359,14 @@
     async function recomputeLifeState() {
       if (!token) return;
       try {
-        showToast('Recomputing financial state...', 'info');
+        showToast('Recomputing state from transaction ledger...', 'info');
         const res = await fetch(`${API_BASE}/api/life-state/recompute`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('Failed to recompute state');
         await loadDashboardData();
-        showToast('Life state updated with latest ledger!', 'success');
+        showToast('Life state updated with latest data!', 'success');
       } catch (err) {
         showToast(err.message, 'error');
       }
@@ -1128,9 +1437,17 @@
             if (matchedCat) {
               document.getElementById('txn-category').value = matchedCat.id;
             }
+            lucide.createIcons();
           }
         } catch (e) {}
-      }, 250);
+      }, 200);
+    }
+
+    function fillPresetTxn(desc, amount, type) {
+      document.getElementById('txn-description').value = desc;
+      document.getElementById('txn-amount').value = amount;
+      document.getElementById('txn-type').value = type;
+      handleNarrationInput(desc);
     }
 
     async function handleAddTransaction(e) {
@@ -1161,7 +1478,7 @@
         });
 
         if (!res.ok) throw new Error('Failed to record transaction');
-        showToast(`Transaction added: ₹${amount.toLocaleString('en-IN')}`, 'success');
+        showToast(`Recorded: ₹${amount.toLocaleString('en-IN')}`, 'success');
         document.getElementById('add-transaction-form').reset();
         document.getElementById('ml-prediction-badge').classList.add('hidden');
 
@@ -1192,30 +1509,30 @@
       document.getElementById('ledger-count').innerText = `${txns.length} records`;
 
       if (!txns.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-500">No transactions recorded yet. Add one above!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">No transactions recorded yet. Add one above!</td></tr>';
         return;
       }
 
       tbody.innerHTML = txns.map(t => {
         const isCredit = t.transaction_type === 'credit';
-        const amtColor = isCredit ? 'text-emerald-400' : 'text-slate-100';
+        const amtColor = isCredit ? 'text-emerald-400 font-bold' : 'text-slate-100 font-medium';
         const sign = isCredit ? '+' : '-';
         const catName = t.category ? t.category.name : 'Uncategorized';
         const catIcon = t.category && t.category.icon ? t.category.icon : '📌';
 
         return `
           <tr class="hover:bg-slate-800/40 transition">
-            <td class="py-3 px-4 text-slate-400 whitespace-nowrap mono">${t.date}</td>
-            <td class="py-3 px-4 font-medium text-white max-w-xs truncate">${t.description}</td>
-            <td class="py-3 px-4 whitespace-nowrap">
-              <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md bg-slate-800 text-[11px] text-slate-300 border border-slate-700">
+            <td class="py-3.5 px-5 text-slate-400 whitespace-nowrap mono">${t.date}</td>
+            <td class="py-3.5 px-5 font-semibold text-white max-w-xs truncate">${t.description}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 text-[11px] text-slate-300 border border-slate-800 font-medium">
                 <span>${catIcon}</span>
                 <span>${catName}</span>
               </span>
             </td>
-            <td class="py-3 px-4 text-right font-bold mono whitespace-nowrap ${amtColor}">${sign}₹${Number(t.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-            <td class="py-3 px-4 text-center">
-              <span class="inline-block w-2 h-2 rounded-full ${isCredit ? 'bg-emerald-500' : 'bg-slate-500'}"></span>
+            <td class="py-3.5 px-5 text-right font-mono whitespace-nowrap ${amtColor}">${sign}₹${Number(t.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+            <td class="py-3.5 px-5 text-center">
+              <span class="inline-block w-2.5 h-2.5 rounded-full ${isCredit ? 'bg-emerald-500' : 'bg-slate-600'}"></span>
             </td>
           </tr>
         `;
@@ -1257,6 +1574,13 @@
     }
 
     // ─── DECISION SIMULATOR ──────────────────────────────────────
+    function setSimPreset(title, amount, tenure, interest) {
+      document.getElementById('sim-title').value = title;
+      document.getElementById('sim-amount').value = amount;
+      document.getElementById('sim-emi-months').value = tenure;
+      document.getElementById('sim-interest').value = interest;
+    }
+
     async function handleRunSimulation(e) {
       e.preventDefault();
       if (!token) { openAuthModal(); return; }
@@ -1374,23 +1698,23 @@
 
       if (role === 'user') {
         msgDiv.innerHTML = `
-          <div class="rounded-2xl p-3.5 max-w-lg text-xs leading-relaxed bg-emerald-500 text-black font-semibold shadow-md">
+          <div class="rounded-2xl p-4 max-w-lg text-xs leading-relaxed bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
             ${escapeHTML(text)}
           </div>
-          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
             <i data-lucide="user" class="w-4 h-4"></i>
           </div>
         `;
       } else {
         const toolsPill = tools.length 
-          ? `<div class="flex items-center space-x-1 mb-2 text-[10px] text-violet-400 font-mono">
-              <span>🔧 Grounded with tools:</span>
-              ${tools.map(t => `<span class="px-1.5 py-0.5 rounded bg-violet-950/80 border border-violet-800/60">${t}</span>`).join(' ')}
+          ? `<div class="flex items-center space-x-1.5 mb-2.5 text-[10px] text-violet-400 font-mono flex-wrap">
+              <span class="font-bold">🔧 Grounded with tools:</span>
+              ${tools.map(t => `<span class="px-2 py-0.5 rounded-md bg-violet-950/80 border border-violet-800/60">${t}</span>`).join(' ')}
              </div>`
           : '';
 
         msgDiv.innerHTML = `
-          <div class="w-8 h-8 rounded-lg bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0">
             <i data-lucide="bot" class="w-4 h-4"></i>
           </div>
           <div class="glass-card rounded-2xl p-4 max-w-xl text-xs text-slate-200 leading-relaxed border border-slate-800">
@@ -1421,7 +1745,7 @@
     function renderGoals(goals) {
       const container = document.getElementById('goals-container');
       if (!goals.length) {
-        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-500 text-xs">No active goals yet. Create one!</div>';
+        container.innerHTML = '<div class="col-span-full py-12 text-center text-slate-500 text-xs font-medium">No active goals yet. Create your first financial milestone!</div>';
         return;
       }
 
@@ -1430,33 +1754,33 @@
         const isDone = g.status === 'completed' || pct >= 100;
 
         return `
-          <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+          <div class="glass-card-interactive rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-white uppercase tracking-wider">${escapeHTML(g.name)}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${isDone ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-400'}">${g.status.toUpperCase()}</span>
+                <span class="text-xs font-extrabold text-white uppercase tracking-wider">${escapeHTML(g.name)}</span>
+                <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">${g.status.toUpperCase()}</span>
               </div>
-              <p class="text-[11px] text-slate-400 mb-4">${escapeHTML(g.description || 'Milestone savings target')}</p>
+              <p class="text-[11px] text-slate-400 mb-4">${escapeHTML(g.description || 'Target savings accumulation goal')}</p>
               
-              <div class="space-y-1 mb-4">
-                <div class="flex justify-between text-xs font-semibold">
+              <div class="space-y-1.5 mb-4">
+                <div class="flex justify-between text-xs font-bold">
                   <span class="text-slate-300">Progress</span>
                   <span class="text-emerald-400 mono">${pct}%</span>
                 </div>
-                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden">
-                  <div class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2.5 rounded-full" style="width: ${pct}%"></div>
+                <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
+                  <div class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-full rounded-full" style="width: ${pct}%"></div>
                 </div>
-                <div class="flex justify-between text-[10px] text-slate-400 mono mt-1">
+                <div class="flex justify-between text-[11px] text-slate-400 mono mt-1">
                   <span>₹${Number(g.current_amount).toLocaleString('en-IN')}</span>
                   <span>Target: ₹${Number(g.target_amount).toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
 
-            <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
-              <span class="text-[10px] text-slate-500">Priority: ${g.priority}</span>
-              <button onclick="contributeToGoal('${g.id}', 10000)" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-medium border border-emerald-500/20 transition">
-                + Add ₹10k
+            <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center">
+              <span class="text-[11px] text-slate-500">Priority Level: ${g.priority}</span>
+              <button onclick="contributeToGoal('${g.id}', 10000)" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold border border-emerald-500/30 transition flex items-center space-x-1">
+                <span>+ Add ₹10k</span>
               </button>
             </div>
           </div>
@@ -1467,7 +1791,6 @@
     async function contributeToGoal(goalId, amount) {
       if (!token) return;
       try {
-        // Fetch current goal
         const res = await fetch(`${API_BASE}/api/goals/${goalId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1484,7 +1807,7 @@
           body: JSON.stringify({ current_amount: newAmt })
         });
         if (patchRes.ok) {
-          confetti({ particleCount: 30, spread: 50 });
+          confetti({ particleCount: 40, spread: 55 });
           showToast(`Contributed ₹${amount.toLocaleString('en-IN')} to ${goal.name}!`, 'success');
           await fetchGoals();
         }
@@ -1492,7 +1815,7 @@
     }
 
     function openNewGoalModal() {
-      const name = prompt('Goal Name (e.g. Vacation to Goa, EV Down Payment):');
+      const name = prompt('Goal Name (e.g. Goa Trip, Car Down Payment, MacBook):');
       if (!name) return;
       const target = parseFloat(prompt('Target Amount in ₹:', '100000'));
       if (!target || isNaN(target)) return;
@@ -1530,21 +1853,21 @@
           container.innerHTML = data.stress_tests.map(st => {
             const isSafe = st.is_survivable_6_months;
             return `
-              <div class="glass-card rounded-2xl p-4 border border-slate-800 flex items-start space-x-3.5">
-                <div class="p-2 rounded-xl ${isSafe ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} flex-shrink-0">
+              <div class="glass-card rounded-3xl p-5 border border-slate-800 flex items-start space-x-4">
+                <div class="p-2.5 rounded-2xl ${isSafe ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} flex-shrink-0">
                   <i data-lucide="${isSafe ? 'check-circle' : 'alert-triangle'}" class="w-5 h-5"></i>
                 </div>
                 <div class="flex-1">
                   <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-bold text-white">${escapeHTML(st.scenario_name)}</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isSafe ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">
+                    <span class="text-xs font-extrabold text-white">${escapeHTML(st.scenario_name)}</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isSafe ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">
                       ${isSafe ? 'SURVIVABLE' : 'STRESSED'}
                     </span>
                   </div>
-                  <p class="text-[11px] text-slate-400 mb-2">${escapeHTML(st.description)}</p>
+                  <p class="text-[11px] text-slate-400 mb-2.5">${escapeHTML(st.description)}</p>
                   <div class="text-[11px] font-medium text-slate-300">
                     Runway After Shock: <strong class="text-cyan-400 mono">${Number(st.runway_months_after).toFixed(1)} mo</strong>
-                    • Post Risk: <strong class="uppercase text-slate-200">${st.risk_level_after}</strong>
+                    • Post Risk Level: <strong class="uppercase text-slate-200">${st.risk_level_after}</strong>
                   </div>
                 </div>
               </div>
@@ -1555,11 +1878,10 @@
       } catch (e) {}
     }
 
-    // ─── OBLIGATIONS & EVENTS ────────────────────────────────────
+    // ─── OBLIGATIONS & HORIZONS ──────────────────────────────────
     async function fetchEvents() {
       if (!token) return;
       try {
-        // Horizon summary
         const hRes = await fetch(`${API_BASE}/api/events/horizon`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1570,7 +1892,6 @@
           document.getElementById('horizon-90d').innerText = '₹' + Number(h.total_90d || 47500).toLocaleString('en-IN', { minimumFractionDigits: 2 });
         }
 
-        // Events list
         const eRes = await fetch(`${API_BASE}/api/events?limit=20`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1578,24 +1899,24 @@
           const events = await eRes.json();
           const list = document.getElementById('events-list-container');
           if (!events.length) {
-            list.innerHTML = '<div class="p-6 text-center text-xs text-slate-500">No upcoming obligations found.</div>';
+            list.innerHTML = '<div class="p-8 text-center text-xs text-slate-500 font-medium">No upcoming contractual obligations found.</div>';
             return;
           }
 
           list.innerHTML = events.map(ev => `
-            <div class="p-4 flex items-center justify-between hover:bg-slate-800/30 transition">
-              <div class="flex items-center space-x-3">
-                <div class="p-2 rounded-xl bg-slate-800 text-cyan-400">
-                  <i data-lucide="clock" class="w-4 h-4"></i>
+            <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-800/30 transition">
+              <div class="flex items-center space-x-3.5">
+                <div class="p-2.5 rounded-xl bg-slate-800 text-cyan-400 border border-slate-700/80">
+                  <i data-lucide="calendar" class="w-4 h-4"></i>
                 </div>
                 <div>
                   <div class="text-xs font-bold text-white">${escapeHTML(ev.title)}</div>
-                  <div class="text-[10px] text-slate-400">Due Date: ${ev.event_date} • Type: ${ev.event_type}</div>
+                  <div class="text-[11px] text-slate-400">Due Date: ${ev.event_date} • Type: ${ev.event_type}</div>
                 </div>
               </div>
               <div class="text-right">
                 <div class="text-xs font-bold text-white mono">₹${Number(ev.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                <span class="text-[10px] text-amber-400 font-semibold uppercase">${ev.status}</span>
+                <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${ev.status}</span>
               </div>
             </div>
           `).join('');
@@ -1604,7 +1925,132 @@
       } catch (e) {}
     }
 
-    // ─── TOAST UTILITY ───────────────────────────────────────────
+    // ─── BANK ACCOUNTS & LIQUID PORTFOLIO ────────────────────────
+    async function fetchAccounts() {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const accounts = await res.json();
+        renderAccounts(accounts);
+      } catch (e) {}
+    }
+
+    function renderAccounts(accounts) {
+      const container = document.getElementById('accounts-container');
+      if (!accounts.length) {
+        // Pre-render standard showcase cards if empty
+        container.innerHTML = `
+          <div class="bank-card-gradient-hdfc rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-48">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-300">HDFC Bank Salary Account</span>
+                <div class="text-xs text-slate-400">Primary Liquid Cash</div>
+              </div>
+              <span class="text-xs font-extrabold text-emerald-400 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">Active</span>
+            </div>
+            <div class="my-auto">
+              <div class="text-2xl font-extrabold text-white mono">₹1,80,000.00</div>
+              <div class="text-[11px] text-slate-400 mono mt-1">•••• •••• •••• 4012</div>
+            </div>
+            <div class="flex justify-between items-end text-[10px] text-slate-400 uppercase tracking-wider">
+              <span>Cardholder: Priya Sharma</span>
+              <span class="font-bold text-white">DEBIT CARD</span>
+            </div>
+          </div>
+
+          <div class="bank-card-gradient-sbi rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-48">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-300">State Bank of India</span>
+                <div class="text-xs text-slate-400">Emergency Fixed Deposit</div>
+              </div>
+              <span class="text-xs font-extrabold text-cyan-400 px-2 py-0.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20">FD Reserve</span>
+            </div>
+            <div class="my-auto">
+              <div class="text-2xl font-extrabold text-white mono">₹2,00,000.00</div>
+              <div class="text-[11px] text-slate-400 mono mt-1">•••• •••• •••• 8821</div>
+            </div>
+            <div class="flex justify-between items-end text-[10px] text-slate-400 uppercase tracking-wider">
+              <span>7.1% p.a. • Instant Liquid</span>
+              <span class="font-bold text-white">EMERGENCY FD</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = accounts.map((acc, idx) => {
+        const bgClass = idx % 2 === 0 ? 'bank-card-gradient-hdfc' : 'bank-card-gradient-sbi';
+        return `
+          <div class="${bgClass} rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-48">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-300">${escapeHTML(acc.name)}</span>
+                <div class="text-xs text-slate-400">${escapeHTML(acc.bank_name || 'Bank Account')}</div>
+              </div>
+              <span class="text-xs font-extrabold text-emerald-400 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                ${acc.is_primary ? 'Primary' : 'Active'}
+              </span>
+            </div>
+            <div class="my-auto">
+              <div class="text-2xl font-extrabold text-white mono">₹${Number(acc.current_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              <div class="text-[11px] text-slate-400 mono mt-1">${acc.account_number_masked ? '•••• •••• •••• ' + acc.account_number_masked : '•••• •••• •••• 1024'}</div>
+            </div>
+            <div class="flex justify-between items-end text-[10px] text-slate-400 uppercase tracking-wider">
+              <span>${acc.account_type.toUpperCase()}</span>
+              <span class="font-bold text-white">VERIFIED</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openNewAccountModal() {
+      document.getElementById('account-modal').classList.remove('hidden');
+    }
+    function closeNewAccountModal() {
+      document.getElementById('account-modal').classList.add('hidden');
+    }
+
+    async function handleCreateAccount(e) {
+      e.preventDefault();
+      if (!token) return;
+
+      const name = document.getElementById('acc-name').value;
+      const account_type = document.getElementById('acc-type').value;
+      const bank_name = document.getElementById('acc-bank').value;
+      const current_balance = parseFloat(document.getElementById('acc-balance').value);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name,
+            account_type,
+            bank_name,
+            current_balance,
+            is_primary: false
+          })
+        });
+
+        if (!res.ok) throw new Error('Failed to create account');
+        closeNewAccountModal();
+        showToast('Bank account linked successfully!', 'success');
+        await fetchAccounts();
+        await recomputeLifeState();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── TOAST NOTIFICATION UTILITY ──────────────────────────────
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -1612,7 +2058,7 @@
         : type === 'error' ? 'border-rose-500/50 text-rose-200' 
         : 'border-cyan-500/50 text-cyan-200';
 
-      toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl bg-slate-900/95 border ${borderCol} text-xs font-medium shadow-2xl backdrop-blur-md flex items-center space-x-2 transition-all transform duration-300 translate-y-4 opacity-0`;
+      toast.className = `pointer-events-auto px-4 py-2.5 rounded-2xl bg-slate-950/95 border ${borderCol} text-xs font-semibold shadow-2xl backdrop-blur-md flex items-center space-x-2 transition-all transform duration-300 translate-y-4 opacity-0`;
       toast.innerHTML = `<span>${escapeHTML(message)}</span>`;
 
       container.appendChild(toast);

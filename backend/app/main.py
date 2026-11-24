@@ -70,6 +70,7 @@ app.add_middleware(
 
 # ─── Register Routes ──────────────────────────────────
 from app.api.auth import router as auth_router
+from app.api.accounts import router as accounts_router
 from app.api.transactions import router as transactions_router
 from app.api.dashboard import router as dashboard_router
 from app.api.assets import router as assets_router
@@ -88,6 +89,7 @@ from app.api.agent import router as agent_router
 from app.api.goals import router as goals_router
 
 app.include_router(auth_router)
+app.include_router(accounts_router)
 app.include_router(transactions_router)
 app.include_router(dashboard_router)
 app.include_router(assets_router)
