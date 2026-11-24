@@ -142,3 +142,14 @@ def get_classifier() -> TransactionClassifier:
             model_path = os.path.join(backend_dir, settings.ML_MODEL_DIR, "transaction_classifier.joblib")
         _global_classifier.load(model_path)
     return _global_classifier
+
+
+def predict_category(description: str) -> Dict[str, Any]:
+    """Convenience helper to predict category and confidence."""
+    clf = get_classifier()
+    cat, conf, is_confident = clf.predict(description)
+    return {
+        "predicted_category": cat,
+        "confidence": float(conf),
+        "is_confident": is_confident
+    }
