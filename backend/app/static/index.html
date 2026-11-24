@@ -67,7 +67,7 @@
 
     /* Ultra-sleek Glassmorphism */
     .glass-nav {
-      background: rgba(11, 15, 25, 0.82);
+      background: rgba(11, 15, 25, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -119,10 +119,6 @@
       background: linear-gradient(135deg, #093739 0%, #155b5f 50%, #093739 100%);
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
-    .bank-card-gradient-icici {
-      background: linear-gradient(135deg, #421818 0%, #752929 50%, #421818 100%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
 
     /* Pulse animation */
     @keyframes pulse-glow {
@@ -150,48 +146,56 @@
         <div>
           <div class="flex items-center space-x-2">
             <span class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">LIFEOS</span>
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">v0.2.0</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">v0.3.0</span>
           </div>
           <div class="flex items-center space-x-1.5 text-[10px] text-slate-400 font-medium">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-glow"></span>
-            <span>Stateful Decision Engine</span>
+            <span>6-Pillar Decision Engine</span>
             <span class="text-slate-600">•</span>
-            <span class="text-emerald-400/90 font-mono">0.2ms ML Core</span>
+            <span class="text-emerald-400/90 font-mono">0.2ms ML</span>
           </div>
         </div>
       </div>
 
       <!-- Main Navigation Dock (Desktop) -->
       <nav id="nav-tabs" class="hidden xl:flex items-center space-x-1 p-1 bg-slate-900/90 rounded-2xl border border-slate-800/90 shadow-inner">
-        <button onclick="switchTab('dashboard')" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all text-emerald-400 bg-slate-800/90 shadow" data-tab="dashboard">
+        <button onclick="switchTab('dashboard')" class="tab-btn active px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all text-emerald-400 bg-slate-800/90 shadow" data-tab="dashboard">
           <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
           <span>Dashboard</span>
         </button>
-        <button onclick="switchTab('transactions')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="transactions">
+        <button onclick="switchTab('transactions')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="transactions">
           <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
           <span>Expenses</span>
         </button>
-        <button onclick="switchTab('simulator')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="simulator">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>Simulator</span>
+        <button onclick="switchTab('simulator')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="simulator">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>Interceptor</span>
         </button>
-        <button onclick="switchTab('agent')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="agent">
+        <button onclick="switchTab('defense')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="defense">
+          <i data-lucide="crosshair" class="w-3.5 h-3.5 text-rose-400"></i>
+          <span>Defense & Debt</span>
+        </button>
+        <button onclick="switchTab('tax')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="tax">
+          <i data-lucide="calculator" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Tax Copilot</span>
+        </button>
+        <button onclick="switchTab('vault')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="vault">
+          <i data-lucide="users" class="w-3.5 h-3.5 text-teal-400"></i>
+          <span>Shared Vault</span>
+        </button>
+        <button onclick="switchTab('agent')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="agent">
           <i data-lucide="bot" class="w-3.5 h-3.5 text-violet-400"></i>
           <span>AI Copilot</span>
         </button>
-        <button onclick="switchTab('goals')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="goals">
+        <button onclick="switchTab('goals')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="goals">
           <i data-lucide="target" class="w-3.5 h-3.5"></i>
           <span>Goals</span>
         </button>
-        <button onclick="switchTab('risk')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="risk">
+        <button onclick="switchTab('risk')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="risk">
           <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-          <span>Risk & Stress</span>
+          <span>Risk</span>
         </button>
-        <button onclick="switchTab('obligations')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="obligations">
-          <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-          <span>Horizons</span>
-        </button>
-        <button onclick="switchTab('accounts')" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white" data-tab="accounts">
+        <button onclick="switchTab('accounts')" class="tab-btn px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1 transition-all text-slate-400 hover:text-white" data-tab="accounts">
           <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
           <span>Accounts</span>
         </button>
@@ -199,13 +203,11 @@
 
       <!-- Right Action Bar: Demo Quick-Switch & User Profile -->
       <div class="flex items-center space-x-2.5">
-        <!-- 1-Click Demo Toggle Button -->
         <button onclick="loginDemoAccount()" title="Load Priya Sharma verified demo household data" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition group">
           <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform"></i>
           <span>Instant Demo</span>
         </button>
 
-        <!-- User Profile Pill -->
         <div id="user-pill" class="hidden items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs">
           <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-bold text-[10px]" id="user-avatar">
             PS
@@ -216,13 +218,11 @@
           </button>
         </div>
 
-        <!-- Sign In Button (When logged out) -->
-        <button id="auth-btn" onclick="openAuthModal()" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/20">
+        <button id="auth-btn" onclick="openAuthModal()" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 text-slate-950 transition flex items-center space-x-1.5 shadow-md shadow-emerald-500/20">
           <i data-lucide="user" class="w-3.5 h-3.5"></i>
-          <span>Sign In / Register</span>
+          <span>Sign In / Demo</span>
         </button>
 
-        <!-- Mobile Menu Toggle Button -->
         <button onclick="toggleMobileMenu()" class="xl:hidden p-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700">
           <i data-lucide="menu" class="w-4 h-4"></i>
         </button>
@@ -231,38 +231,38 @@
     </div>
 
     <!-- Mobile Drawer Navigation -->
-    <div id="mobile-nav-menu" class="hidden xl:hidden px-4 pt-2 pb-4 bg-slate-950/95 border-b border-slate-800 space-y-1">
-      <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+    <div id="mobile-nav-menu" class="hidden xl:hidden px-4 pt-2 pb-4 bg-slate-950/95 border-b border-slate-800 grid grid-cols-2 gap-2 text-xs">
+      <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
         <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-400"></i>
         <span>Dashboard</span>
       </button>
-      <button onclick="switchTab('transactions'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+      <button onclick="switchTab('transactions'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
         <i data-lucide="receipt" class="w-4 h-4 text-cyan-400"></i>
-        <span>Expenses & ML Predictor</span>
+        <span>Expenses & ML</span>
       </button>
-      <button onclick="switchTab('simulator'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
-        <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
-        <span>Can I Afford It? Simulator</span>
+      <button onclick="switchTab('simulator'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+        <span>Interceptor</span>
       </button>
-      <button onclick="switchTab('agent'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+      <button onclick="switchTab('defense'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="crosshair" class="w-4 h-4 text-rose-400"></i>
+        <span>Defense & Debt</span>
+      </button>
+      <button onclick="switchTab('tax'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
+        <span>Tax Copilot</span>
+      </button>
+      <button onclick="switchTab('vault'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="users" class="w-4 h-4 text-teal-400"></i>
+        <span>Shared Vault</span>
+      </button>
+      <button onclick="switchTab('agent'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
         <i data-lucide="bot" class="w-4 h-4 text-violet-400"></i>
-        <span>Grounded AI Copilot</span>
+        <span>AI Copilot</span>
       </button>
-      <button onclick="switchTab('goals'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
-        <i data-lucide="target" class="w-4 h-4 text-emerald-400"></i>
-        <span>Goals & Milestones</span>
-      </button>
-      <button onclick="switchTab('risk'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
-        <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
-        <span>5-Pillar Risk & Stress Tests</span>
-      </button>
-      <button onclick="switchTab('obligations'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
-        <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
-        <span>Contractual Horizons</span>
-      </button>
-      <button onclick="switchTab('accounts'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
-        <i data-lucide="credit-card" class="w-4 h-4 text-teal-400"></i>
-        <span>Bank Accounts & Wallets</span>
+      <button onclick="switchTab('accounts'); toggleMobileMenu()" class="text-left px-3 py-2 rounded-xl font-semibold flex items-center space-x-2 text-slate-300 hover:bg-slate-800">
+        <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+        <span>Accounts</span>
       </button>
     </div>
   </header>
@@ -273,10 +273,60 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD (WITH PILLAR 2 SAFE-TO-SPEND) -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-dashboard" class="tab-content space-y-6">
       
+      <!-- 🟢 PILLAR 2 HERO: DAILY SAFE-TO-SPEND ALLOWANCE METER -->
+      <div class="glass-card rounded-3xl p-6 border border-emerald-500/30 glow-emerald relative overflow-hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 pulse-glow"></span>
+                Pillar 2 • Daily Habit Metric
+              </span>
+              <span id="s2s-status-badge" class="text-xs font-bold text-emerald-400">🟢 On Track</span>
+            </div>
+            <h2 class="text-xs uppercase tracking-wider font-bold text-slate-400">Today's Safe-to-Spend Allowance</h2>
+            <div class="flex items-baseline space-x-3">
+              <div id="s2s-amount" class="text-3xl sm:text-4xl font-extrabold text-white mono tracking-tight">₹1,450.00</div>
+              <span class="text-xs text-slate-400 font-medium">Free Discretionary Budget for Today</span>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+            <button onclick="switchTab('transactions'); document.getElementById('voice-input').focus();" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center space-x-1.5 transition shadow-lg shadow-emerald-500/20">
+              <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+              <span>Quick Voice / Log</span>
+            </button>
+            <button onclick="fetchSafeToSpend()" title="Refresh Safe-to-Spend" class="p-2.5 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Discretionary Burn Progress Bar -->
+        <div class="mt-4 pt-4 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="text-slate-300">
+            <span class="text-slate-400 text-[11px] block">Monthly Free Discretionary Pool:</span>
+            <strong id="s2s-pool" class="text-white mono font-bold">₹38,000.00</strong>
+            <span class="text-slate-500 text-[10px] block">(Income ₹1.2L - Fixed ₹47k - Goal ₹35k)</span>
+          </div>
+          <div class="text-slate-300">
+            <span class="text-slate-400 text-[11px] block">Month-to-Date Discretionary Spend:</span>
+            <strong id="s2s-spent-mtd" class="text-amber-400 mono font-bold">₹16,250.00</strong>
+            <span class="text-slate-500 text-[10px] block">Days Remaining: <span id="s2s-days-left">15 days</span></span>
+          </div>
+          <div class="text-slate-300">
+            <span class="text-slate-400 text-[11px] block">Mathematical Guarantee:</span>
+            <p id="s2s-advice" class="text-[11px] text-emerald-300 font-medium leading-relaxed">
+              Spending below this number keeps your rent, loans, and emergency fund 100% safe.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- HERO BENTO METRIC CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
@@ -352,10 +402,9 @@
 
       </div>
 
-      <!-- EXECUTIVE INTELLIGENCE BRIEFING: "WHAT CHANGED?" & "WHAT AM I FORGETTING?" -->
+      <!-- INSIGHT BANNERS: "WHAT CHANGED?" & "WHAT AM I FORGETTING?" -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
-        <!-- Card 1: What Changed -->
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 relative">
           <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center space-x-2">
@@ -374,7 +423,6 @@
           </div>
         </div>
 
-        <!-- Card 2: What Am I Forgetting -->
         <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 relative">
           <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center space-x-2">
@@ -392,10 +440,9 @@
 
       </div>
 
-      <!-- INTERACTIVE CHARTS & QUICK ACTION CENTER -->
+      <!-- CHARTS & QUICK ACTION LAUNCHERS -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Chart: Monthly Cashflow Dynamics -->
         <div class="glass-card rounded-2xl p-6 lg:col-span-2">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
             <div>
@@ -413,40 +460,36 @@
           </div>
         </div>
 
-        <!-- Quick Launchers & Top Goal Bento -->
         <div class="space-y-4">
-          
-          <!-- Quick Action Buttons -->
           <div class="glass-card rounded-2xl p-5">
-            <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Quick Actions</h3>
+            <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Innovation Pillars</h3>
             <div class="grid grid-cols-2 gap-2.5">
-              <button onclick="switchTab('transactions'); document.getElementById('txn-description').focus();" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
-                <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-400 mb-1 group-hover:scale-110 transition-transform"></i>
-                <div class="text-xs font-bold text-white">Add Expense</div>
-                <div class="text-[10px] text-slate-400">With ML Predict</div>
-              </button>
-              
               <button onclick="switchTab('simulator')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
-                <i data-lucide="sparkles" class="w-5 h-5 text-cyan-400 mb-1 group-hover:scale-110 transition-transform"></i>
-                <div class="text-xs font-bold text-white">Can I Afford?</div>
-                <div class="text-[10px] text-slate-400">Cash vs EMI</div>
+                <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Interceptor</div>
+                <div class="text-[10px] text-slate-400">Pre-Purchase</div>
               </button>
               
-              <button onclick="switchTab('agent')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
-                <i data-lucide="bot" class="w-5 h-5 text-violet-400 mb-1 group-hover:scale-110 transition-transform"></i>
-                <div class="text-xs font-bold text-white">Ask AI Agent</div>
-                <div class="text-[10px] text-slate-400">0% Hallucination</div>
+              <button onclick="switchTab('defense')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="crosshair" class="w-5 h-5 text-rose-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Zombie Hunter</div>
+                <div class="text-[10px] text-slate-400">& Debt Payoff</div>
               </button>
               
-              <button onclick="switchTab('risk')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
-                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400 mb-1 group-hover:scale-110 transition-transform"></i>
-                <div class="text-xs font-bold text-white">Stress Test</div>
-                <div class="text-[10px] text-slate-400">5 Macro Shocks</div>
+              <button onclick="switchTab('tax')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="calculator" class="w-5 h-5 text-amber-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Tax Copilot</div>
+                <div class="text-[10px] text-slate-400">Old vs New</div>
+              </button>
+              
+              <button onclick="switchTab('vault')" class="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group">
+                <i data-lucide="users" class="w-5 h-5 text-teal-400 mb-1 group-hover:scale-110 transition-transform"></i>
+                <div class="text-xs font-bold text-white">Shared Vault</div>
+                <div class="text-[10px] text-slate-400">Flatmate Split</div>
               </button>
             </div>
           </div>
 
-          <!-- Top Milestone Goal Card -->
           <div class="glass-card rounded-2xl p-5">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Top Goal Progress</h3>
@@ -474,79 +517,90 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 2: EXPENSES & REAL-TIME ML CATEGORY DETECTIVE -->
+    <!-- TAB 2: EXPENSES (WITH PILLAR 1 ZERO-EFFORT INGESTION) -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-transactions" class="tab-content hidden space-y-6">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 class="text-2xl font-extrabold text-white tracking-tight">Expense & Transaction Intelligence</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Log transactions with real-time ML category prediction or import bank statement CSVs</p>
+      
+      <!-- 🎙️ PILLAR 1: NATURAL LANGUAGE VOICE/TEXT BAR & RECEIPT OCR -->
+      <div class="glass-card rounded-3xl p-6 border border-emerald-500/25 glow-emerald">
+        <div class="flex items-center space-x-2.5 mb-3">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="mic" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Zero-Effort Voice & Text Ingestion (Pillar 1)</h3>
+            <p class="text-[11px] text-slate-400">Speak or paste natural text like "Spent 450 at CCD on coffee" — parses and logs automatically</p>
+          </div>
         </div>
-        <div class="flex space-x-2">
-          <button onclick="document.getElementById('csv-upload-input').click()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 flex items-center space-x-2 transition shadow">
-            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-            <span>Upload Bank CSV</span>
+
+        <!-- Conversational Ingestion Input -->
+        <form onsubmit="handleNaturalLanguageIngest(event)" class="flex flex-col sm:flex-row gap-2.5 mb-3">
+          <div class="relative flex-1">
+            <input type="text" id="voice-input" placeholder="e.g. Swiggy dinner 650 via HDFC card, Petrol 2200 BPCL diesel, Salary 120000 credited" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+          </div>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-extrabold text-xs flex items-center justify-center space-x-1.5 transition shadow">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Parse & Auto-Log</span>
           </button>
-          <input type="file" id="csv-upload-input" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
+        </form>
+
+        <!-- Simulated Voice Chips & Receipt Scanner Trigger -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-2 border-t border-slate-800/80">
+          <div class="flex items-center space-x-1.5 overflow-x-auto custom-scroll">
+            <span class="text-[11px] text-slate-400 font-semibold uppercase">Voice Presets:</span>
+            <button type="button" onclick="setVoiceInput('Swiggy gourmet dinner 850 rupees via HDFC')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
+              🎙️ Swiggy ₹850
+            </button>
+            <button type="button" onclick="setVoiceInput('Petrol 2400 diesel at BPCL pump')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
+              🎙️ BPCL Fuel ₹2.4k
+            </button>
+            <button type="button" onclick="setVoiceInput('Star Health annual insurance premium 15000 renewal')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
+              🎙️ Star Health ₹15k
+            </button>
+            <button type="button" onclick="setVoiceInput('Infosys monthly salary 120000 credited')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-emerald-400 font-semibold">
+              🎙️ Salary ₹1.20L
+            </button>
+          </div>
+
+          <button onclick="openReceiptScannerModal()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 flex items-center space-x-1.5">
+            <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+            <span>📸 Snap Receipt OCR</span>
+          </button>
         </div>
       </div>
 
-      <!-- ADD TRANSACTION FORM (REAL-TIME ML PREDICTOR) -->
-      <div class="glass-card rounded-3xl p-6 border border-emerald-500/25 glow-emerald relative">
+      <!-- ADD TRANSACTION FORM (MANUAL WITH LIVE ML CATEGORY DETECTIVE) -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
         <div class="flex items-center space-x-2.5 mb-4">
-          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+          <div class="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700">
             <i data-lucide="plus" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Record Transaction</h3>
-            <p class="text-[11px] text-slate-400">Type any Indian merchant or narration — ML categorizes it instantly with sub-millisecond inference</p>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Record Detailed Transaction</h3>
+            <p class="text-[11px] text-slate-400">Manual entry with sub-millisecond ML category auto-prediction</p>
           </div>
         </div>
 
-        <!-- One-Click Preset Chips for Live Demo -->
-        <div class="mb-4 flex items-center space-x-2 overflow-x-auto pb-1 text-xs custom-scroll">
-          <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex-shrink-0">Quick Presets:</span>
-          <button type="button" onclick="fillPresetTxn('Swiggy gourmet dinner order', 850, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
-            🍔 Swiggy ₹850
-          </button>
-          <button type="button" onclick="fillPresetTxn('Bharat Petroleum diesel auto-fuel debit', 2400, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
-            ⛽ BPCL Fuel ₹2.4k
-          </button>
-          <button type="button" onclick="fillPresetTxn('Star Health insurance premium annual renewal', 15000, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
-            🏥 Star Health ₹15k
-          </button>
-          <button type="button" onclick="fillPresetTxn('HDFC home loan auto-debit EMI', 28500, 'debit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 flex-shrink-0 transition">
-            🏠 HDFC Loan ₹28.5k
-          </button>
-          <button type="button" onclick="fillPresetTxn('Infosys tech monthly salary credited', 120000, 'credit')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-emerald-400 flex-shrink-0 transition font-semibold">
-            💼 Salary ₹1.20L
-          </button>
-        </div>
-
         <form id="add-transaction-form" onsubmit="handleAddTransaction(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4">
-          
-          <!-- Narration / Description with live ML prediction listener -->
           <div class="lg:col-span-5 relative">
             <label class="block text-xs font-semibold text-slate-300 mb-1">Narration / Merchant String</label>
-            <input type="text" id="txn-description" required placeholder="e.g. Swiggy order Pune, BESCOM power, LIC insurance premium" 
-              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition shadow-inner"
+            <input type="text" id="txn-description" required placeholder="e.g. BESCOM electricity bill, HDFC home loan EMI" 
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition shadow-inner"
               oninput="handleNarrationInput(this.value)">
             
-            <!-- Real-time ML Prediction Badge -->
             <div id="ml-prediction-badge" class="hidden absolute right-3 top-9 items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 text-[11px] font-semibold backdrop-blur-md">
               <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400 animate-pulse"></i>
               <span id="ml-badge-text">ML: Food & Dining (96%)</span>
             </div>
           </div>
 
-          <!-- Amount -->
           <div class="lg:col-span-2">
             <label class="block text-xs font-semibold text-slate-300 mb-1">Amount (₹)</label>
             <input type="number" id="txn-amount" step="0.01" min="0.01" required placeholder="1499.00" 
-              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition mono shadow-inner">
+              class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition mono shadow-inner">
           </div>
 
-          <!-- Type (Debit / Credit) -->
           <div class="lg:col-span-2">
             <label class="block text-xs font-semibold text-slate-300 mb-1">Type</label>
             <select id="txn-type" class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
@@ -555,7 +609,6 @@
             </select>
           </div>
 
-          <!-- Category (Auto-selected by ML or manually chosen) -->
           <div class="lg:col-span-3">
             <label class="block text-xs font-semibold text-slate-300 mb-1">Category</label>
             <select id="txn-category" class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
@@ -563,9 +616,8 @@
             </select>
           </div>
 
-          <!-- Submit Button -->
           <div class="lg:col-span-12 flex justify-end pt-2">
-            <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs flex items-center space-x-2 transition shadow-lg shadow-emerald-500/20">
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs flex items-center space-x-2 transition border border-slate-700 shadow">
               <i data-lucide="check-circle" class="w-4 h-4"></i>
               <span>Save & Recompute Life State</span>
             </button>
@@ -613,17 +665,26 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 3: DECISION SIMULATOR ("CAN I AFFORD IT?") -->
+    <!-- TAB 3: PRE-PURCHASE INTERCEPTOR (PILLAR 3) -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-simulator" class="tab-content hidden space-y-6">
-      <div>
-        <h2 class="text-2xl font-extrabold text-white tracking-tight">Decision Simulator & Affordability Matrix</h2>
-        <p class="text-xs text-slate-400 mt-0.5">Evaluate big-ticket purchases across liquid runway, monthly cashflow, and DTI debt risk</p>
+      
+      <!-- INTERCEPTOR SHIELD BANNER -->
+      <div class="glass-card rounded-3xl p-6 border border-cyan-500/30 glow-cyan">
+        <div class="flex items-center space-x-2.5 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+            <i data-lucide="shield" class="w-3.5 h-3.5 mr-1 text-cyan-400"></i>
+            Pillar 3 • Pre-Purchase Interceptor
+          </span>
+          <span class="text-xs text-slate-400 font-medium">Intervenes before checkout to prevent regret</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Amazon / Flipkart Purchase Interceptor</h2>
+        <p class="text-xs text-slate-400 mt-1">Paste any product name and price below to simulate immediate runway drop, goal delay, and optimal financing</p>
       </div>
 
       <!-- Quick Preset Chips -->
       <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs custom-scroll">
-        <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex-shrink-0">Simulate Preset:</span>
+        <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex-shrink-0">Intercept Product:</span>
         <button type="button" onclick="setSimPreset('MacBook Pro M3 Max', 199900, 12, 13.5)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
           💻 MacBook Pro (₹1.99L)
         </button>
@@ -636,17 +697,14 @@
         <button type="button" onclick="setSimPreset('Bali International Vacation', 120000, 6, 15.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
           🏖️ Bali Holiday (₹1.20L)
         </button>
-        <button type="button" onclick="setSimPreset('Sony Alpha A7 IV Mirrorless Camera', 120000, 12, 13.0)" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex-shrink-0 font-medium transition">
-          📷 Sony Camera (₹1.20L)
-        </button>
       </div>
 
-      <!-- SIMULATION INPUT FORM -->
-      <div class="glass-card rounded-3xl p-6 border border-cyan-500/25 glow-cyan">
+      <!-- INTERCEPTOR SIMULATION FORM -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
         <form onsubmit="handleRunSimulation(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Purchase Item / Title</label>
-            <input type="text" id="sim-title" required value="MacBook Pro M3 Max" placeholder="e.g. iPhone 16 Pro, Ola S1 Pro" 
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Product Title / Merchant</label>
+            <input type="text" id="sim-title" required value="MacBook Pro M3 Max" 
               class="w-full bg-slate-950 border border-slate-700/90 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
           </div>
           <div>
@@ -670,8 +728,8 @@
           </div>
           <div class="sm:col-span-2 lg:col-span-4 flex justify-end pt-2">
             <button type="submit" id="sim-submit-btn" class="px-7 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center space-x-2 transition shadow-xl shadow-cyan-500/25">
-              <i data-lucide="play" class="w-4 h-4"></i>
-              <span>Simulate All 3 Scenarios</span>
+              <i data-lucide="shield-alert" class="w-4 h-4"></i>
+              <span>Intercept & Run Decision Matrix</span>
             </button>
           </div>
         </form>
@@ -683,17 +741,15 @@
           <div class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
             <i data-lucide="award" class="w-5 h-5"></i>
           </div>
-          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Mathematical Recommendation</h3>
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Interceptor Verdict</h3>
         </div>
         <p id="sim-rec-text" class="text-xs text-slate-200 leading-relaxed font-medium">
-          Run a simulation to generate an objective mathematical decision verdict.
+          Run an interception simulation to evaluate cashflow impact before purchasing.
         </p>
       </div>
 
       <!-- 3 SCENARIO PATHS GRID -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="sim-paths-grid">
-        
-        <!-- Path 1: Cash -->
         <div class="glass-card rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
@@ -720,7 +776,6 @@
           </div>
         </div>
 
-        <!-- Path 2: EMI -->
         <div class="glass-card rounded-3xl p-6 border-2 border-emerald-500/50 glow-emerald flex flex-col justify-between relative">
           <div class="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider shadow">
             Balanced Path
@@ -750,7 +805,6 @@
           </div>
         </div>
 
-        <!-- Path 3: Delay -->
         <div class="glass-card rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
@@ -776,12 +830,236 @@
             Zero interest cost; purchase unlocked cleanly after disciplined savings window.
           </div>
         </div>
-
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 4: GROUNDED AI FINANCIAL COPILOT -->
+    <!-- TAB 4: AUTONOMOUS FINANCIAL DEFENSE & DEBT (PILLAR 4) -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section id="tab-defense" class="tab-content hidden space-y-6">
+      
+      <div class="glass-card rounded-3xl p-6 border border-rose-500/30 glow-rose">
+        <div class="flex items-center space-x-2.5 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+            <i data-lucide="crosshair" class="w-3.5 h-3.5 mr-1 text-rose-400"></i>
+            Pillar 4 • Autonomous Defense
+          </span>
+          <span class="text-xs text-slate-400 font-medium">Saves real money automatically</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Zombie Subscription Destroyer & Debt Payoff Optimizer</h2>
+        <p class="text-xs text-slate-400 mt-1">Eliminate unused recurring drains, accelerate loan freedom, and maximize credit card rewards</p>
+      </div>
+
+      <!-- 1. ZOMBIE SUBSCRIPTION DESTROYER -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+          <div>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Zombie Subscription Hunter</h3>
+            <p class="text-xs text-slate-400">Recurring charges detected in your accounts with cancellation step-by-step guides</p>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-400">Annual Subscriptions Bleed:</div>
+            <div id="zombie-annual-bleed" class="text-lg font-bold text-rose-400 mono">₹14,988.00/yr</div>
+          </div>
+        </div>
+
+        <div id="zombie-list-container" class="space-y-3">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+
+      <!-- 2. DEBT PAYOFF ENGINE (SNOWBALL VS AVALANCHE) -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Debt Snowball vs Avalanche Accelerator</h3>
+            <p class="text-xs text-slate-400">Simulate how paying a small extra monthly sum cuts off years of interest</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25">
+            Smart Payoff
+          </span>
+        </div>
+
+        <!-- Prepayment Slider -->
+        <div class="mb-5 p-4 rounded-2xl bg-slate-950 border border-slate-800">
+          <div class="flex justify-between items-center mb-2">
+            <label class="text-xs font-semibold text-slate-300">Extra Monthly Prepayment: <span id="prepay-val" class="text-emerald-400 font-bold mono">₹2,500/mo</span></label>
+            <span class="text-[11px] text-slate-500">Slide to test savings</span>
+          </div>
+          <input type="range" id="prepay-slider" min="0" max="10000" step="500" value="2500" 
+            class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+            oninput="handleDebtPrepaySlider(this.value)">
+        </div>
+
+        <div id="debt-payoff-summary" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- 3. CREDIT CARD REWARD OPTIMIZER -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
+        <h3 class="text-sm font-extrabold text-white uppercase tracking-wider mb-2">Credit Card Rewards & APR Optimizer</h3>
+        <p class="text-xs text-slate-400 mb-4">Select an expense category to see which Indian credit card maximizes your cashback</p>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
+          <button onclick="queryCardReward('Shopping', 5000)" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition">
+            <div class="text-xs font-bold text-white">🛍️ Shopping / Amazon</div>
+            <div class="text-[10px] text-emerald-400">5% Cashback Card</div>
+          </button>
+          <button onclick="queryCardReward('Food & Dining', 1200)" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition">
+            <div class="text-xs font-bold text-white">🍔 Swiggy & Zomato</div>
+            <div class="text-[10px] text-emerald-400">5% Cashback Card</div>
+          </button>
+          <button onclick="queryCardReward('Electricity', 3500)" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition">
+            <div class="text-xs font-bold text-white">⚡ Electricity Bills</div>
+            <div class="text-[10px] text-cyan-400">10% - 25% Off Card</div>
+          </button>
+          <button onclick="queryCardReward('Fuel', 2500)" class="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition">
+            <div class="text-xs font-bold text-white">⛽ Petrol & Diesel</div>
+            <div class="text-[10px] text-amber-400">Surcharge Waiver</div>
+          </button>
+        </div>
+
+        <div id="card-reward-result" class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs">
+          <span class="text-slate-400">Click a category above to view real-time card optimization.</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TAB 5: INDIAN TAX & SALARY COPILOT (PILLAR 5) -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section id="tab-tax" class="tab-content hidden space-y-6">
+      
+      <div class="glass-card rounded-3xl p-6 border border-amber-500/30 glow-amber">
+        <div class="flex items-center space-x-2.5 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+            <i data-lucide="calculator" class="w-3.5 h-3.5 mr-1 text-amber-400"></i>
+            Pillar 5 • Tax Copilot
+          </span>
+          <span class="text-xs text-slate-400 font-medium">Budget 2026/27 Ready</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Old vs. New Income Tax Regime Comparator</h2>
+        <p class="text-xs text-slate-400 mt-1">Computes exact tax liability with standard deduction, HRA exemption, Section 80C, 80D, home loan interest, and NPS</p>
+      </div>
+
+      <!-- TAX INPUT FORM -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
+        <form onsubmit="handleTaxFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Gross Annual Income (CTC) ₹</label>
+            <input type="number" id="tax-gross" required value="1500000" step="10000" min="100000" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">HRA Exemption Claimed ₹</label>
+            <input type="number" id="tax-hra" value="180000" step="5000" min="0" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Section 80C (EPF, ELSS, PPF) ₹</label>
+            <input type="number" id="tax-80c" value="150000" max="150000" min="0" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Section 80D (Health Insurance) ₹</label>
+            <input type="number" id="tax-80d" value="25000" max="75000" min="0" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Section 24 (Home Loan Interest) ₹</label>
+            <input type="number" id="tax-sec24" value="0" max="200000" min="0" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Section 80CCD(1B) (NPS) ₹</label>
+            <input type="number" id="tax-nps" value="50000" max="50000" min="0" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white mono">
+          </div>
+          <div class="sm:col-span-2 lg:col-span-3 flex justify-end">
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-400 text-slate-950 font-extrabold text-xs flex items-center space-x-1.5 transition shadow">
+              <i data-lucide="calculator" class="w-4 h-4"></i>
+              <span>Compare Regimes & Compute Savings</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- COMPARISON CARDS & RECOMMENDATION -->
+      <div id="tax-result-container" class="space-y-4">
+        <!-- Dynamically rendered -->
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TAB 6: HOUSEHOLD SHARED VAULT (PILLAR 6) -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section id="tab-vault" class="tab-content hidden space-y-6">
+      
+      <div class="glass-card rounded-3xl p-6 border border-teal-500/30 glow-cyan">
+        <div class="flex items-center space-x-2.5 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-teal-500/15 text-teal-400 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+            <i data-lucide="users" class="w-3.5 h-3.5 mr-1 text-teal-400"></i>
+            Pillar 6 • Shared Vault
+          </span>
+          <span class="text-xs text-slate-400 font-medium">Household & Flatmate Shared Brain</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white tracking-tight">Koregaon Park Flat 402 Shared Vault</h2>
+        <p class="text-xs text-slate-400 mt-1">Split rent, cook salaries, and electricity bills automatically with real-time Splitwise-style UPI settlements</p>
+      </div>
+
+      <!-- SHARED STATS & SETTLEMENTS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs text-slate-400 uppercase font-semibold">Total Shared Month Spend</span>
+          <div id="vault-total" class="text-2xl font-extrabold text-white mono mt-2">₹21,149.00</div>
+          <div class="text-[11px] text-teal-400 mt-1 font-medium">Split equally across 3 members</div>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs text-slate-400 uppercase font-semibold">Per Person Share</span>
+          <div id="vault-share" class="text-2xl font-extrabold text-cyan-400 mono mt-2">₹7,049.67</div>
+          <div class="text-[11px] text-slate-400 mt-1">Individual monthly liability</div>
+        </div>
+        <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
+          <div>
+            <span class="text-xs text-slate-400 uppercase font-semibold">Add Shared Expense</span>
+            <div class="text-xs text-slate-300 mt-1 font-medium">Log maid, wifi, or groceries</div>
+          </div>
+          <button onclick="openAddSharedExpenseModal()" class="px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center space-x-1">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>+ Add Bill</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- UPI SETTLEMENTS RADAR -->
+      <div class="glass-card rounded-3xl p-6 border border-slate-800">
+        <h3 class="text-sm font-extrabold text-white uppercase tracking-wider mb-2">Automated UPI Settlement Radar</h3>
+        <p class="text-xs text-slate-400 mb-4">Minimum transactions required to fully settle all debts between members</p>
+        <div id="vault-settlements-list" class="space-y-2.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- SHARED EXPENSE HISTORY LEDGER -->
+      <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
+        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Shared Bills Ledger</h3>
+          <button onclick="fetchHouseholdVault()" class="p-1.5 rounded-lg bg-slate-800 text-slate-300">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div id="vault-expenses-list" class="divide-y divide-slate-800/60 text-xs">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TAB 7: GROUNDED AI FINANCIAL COPILOT -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-agent" class="tab-content hidden space-y-4">
       <div>
@@ -789,13 +1067,8 @@
         <p class="text-xs text-slate-400 mt-0.5">Natural language decision partner backed by 13 deterministic tools with 0% numerical hallucination</p>
       </div>
 
-      <!-- CHAT INTERFACE -->
       <div class="glass-card rounded-3xl flex flex-col h-[550px] overflow-hidden border border-slate-800 shadow-2xl">
-        
-        <!-- Messages Area -->
         <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll">
-          
-          <!-- Assistant Welcome -->
           <div class="flex items-start space-x-3">
             <div class="w-9 h-9 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 flex-shrink-0">
               <i data-lucide="bot" class="w-5 h-5"></i>
@@ -806,10 +1079,8 @@
               <p class="mt-2 text-slate-400 text-[11px]">Ask me anything about affordability, expense forecasts, debt risk, or upcoming renewals!</p>
             </div>
           </div>
-
         </div>
 
-        <!-- Quick Prompt Chips -->
         <div class="p-3 bg-slate-950/70 border-t border-slate-800/80 flex items-center space-x-2 overflow-x-auto text-[11px] custom-scroll">
           <button onclick="sendQuickPrompt('Can I afford to buy a 2 lakh rupee laptop right now?')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             💻 Afford ₹2L laptop?
@@ -825,7 +1096,6 @@
           </button>
         </div>
 
-        <!-- Input Box -->
         <form onsubmit="handleAgentChat(event)" class="p-3 bg-slate-950 border-t border-slate-800 flex items-center space-x-2">
           <input type="text" id="agent-input" placeholder="Ask about expenses, purchases, runway, or upcoming EMIs..." 
             class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition">
@@ -838,7 +1108,7 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 5: WEALTH GOALS & MILESTONES -->
+    <!-- TAB 8: WEALTH GOALS & MILESTONES -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-goals" class="tab-content hidden space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -852,14 +1122,13 @@
         </button>
       </div>
 
-      <!-- GOALS LIST GRID -->
       <div id="goals-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <!-- Dynamically rendered via JS -->
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 6: 5-PILLAR RISK & MACRO STRESS TESTS -->
+    <!-- TAB 9: 5-PILLAR RISK & MACRO STRESS TESTS -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-risk" class="tab-content hidden space-y-6">
       <div>
@@ -867,7 +1136,6 @@
         <p class="text-xs text-slate-400 mt-0.5">Algorithmic stress testing against income shock, interest rate jumps, medical emergencies, and inflation</p>
       </div>
 
-      <!-- 5-PILLAR PILLARS CARDS -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         <div class="glass-card rounded-2xl p-4 text-center">
           <div class="text-[10px] uppercase font-bold text-slate-400">1. Liquidity</div>
@@ -896,7 +1164,6 @@
         </div>
       </div>
 
-      <!-- 5 MACRO STRESS SCENARIO CARDS -->
       <div class="space-y-3.5">
         <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Automated Macroeconomic Stress Scenarios</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="stress-scenarios-container">
@@ -906,49 +1173,7 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 7: UPCOMING OBLIGATIONS & HORIZONS -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <section id="tab-obligations" class="tab-content hidden space-y-6">
-      <div>
-        <h2 class="text-2xl font-extrabold text-white tracking-tight">Upcoming Obligations & Contractual Horizons</h2>
-        <p class="text-xs text-slate-400 mt-0.5">Deterministic aggregation of upcoming loan EMIs, insurance renewals, and subscription billing</p>
-      </div>
-
-      <!-- HORIZON SUMMARY CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500">
-          <div class="text-xs text-slate-400 uppercase font-semibold">30-Day Obligations</div>
-          <div id="horizon-30d" class="text-2xl font-extrabold text-white mt-2 mono">₹14,500.00</div>
-          <div class="text-[11px] text-emerald-400 mt-1 font-medium">1 upcoming auto-debit</div>
-        </div>
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500">
-          <div class="text-xs text-slate-400 uppercase font-semibold">60-Day Obligations</div>
-          <div id="horizon-60d" class="text-2xl font-extrabold text-white mt-2 mono">₹33,000.00</div>
-          <div class="text-[11px] text-cyan-400 mt-1 font-medium">2 upcoming payments</div>
-        </div>
-        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-violet-500">
-          <div class="text-xs text-slate-400 uppercase font-semibold">90-Day Obligations</div>
-          <div id="horizon-90d" class="text-2xl font-extrabold text-white mt-2 mono">₹47,500.00</div>
-          <div class="text-[11px] text-violet-400 mt-1 font-medium">3 upcoming payments</div>
-        </div>
-      </div>
-
-      <!-- EVENTS LIST -->
-      <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
-          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Scheduled Payment Calendar</h3>
-          <button onclick="fetchEvents()" title="Refresh Horizons" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-          </button>
-        </div>
-        <div class="divide-y divide-slate-800/60" id="events-list-container">
-          <!-- Dynamically populated via JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- TAB 8: BANK ACCOUNTS & LIQUID PORTFOLIO (NEW!) -->
+    <!-- TAB 10: BANK ACCOUNTS & LIQUID PORTFOLIO -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-accounts" class="tab-content hidden space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -962,7 +1187,6 @@
         </button>
       </div>
 
-      <!-- DIGITAL BANK CARDS GRID -->
       <div id="accounts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <!-- Dynamically rendered via JS -->
       </div>
@@ -971,8 +1195,81 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- AUTHENTICATION & DEMO MODAL -->
+  <!-- MODAL: RECEIPT OCR SCANNER (PILLAR 1) -->
   <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeReceiptScannerModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-4">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2">
+          <i data-lucide="camera" class="w-5 h-5"></i>
+        </div>
+        <h3 class="text-lg font-extrabold text-white">Receipt & Bill OCR Scanner (Pillar 1)</h3>
+        <p class="text-xs text-slate-400 mt-1">Paste receipt text or try sample restaurant / grocery bill</p>
+      </div>
+
+      <div class="flex space-x-2 mb-3">
+        <button onclick="loadSampleReceipt('starbucks')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white">
+          ☕ Starbucks Bill
+        </button>
+        <button onclick="loadSampleReceipt('dmart')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white">
+          🛒 D-Mart Grocery Bill
+        </button>
+      </div>
+
+      <textarea id="receipt-ocr-input" rows="6" placeholder="Paste bill OCR text here..." 
+        class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white mono mb-4 focus:outline-none focus:border-cyan-500"></textarea>
+
+      <button onclick="handleReceiptOCRParse()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-400 text-slate-950 font-bold text-xs">
+        Parse Bill & Add to Ledger
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- MODAL: ADD SHARED EXPENSE (PILLAR 6) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="shared-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeAddSharedExpenseModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-white">Add Shared Flatmate Expense</h3>
+        <p class="text-xs text-slate-400 mt-1">Automatically splits equally across flatmates</p>
+      </div>
+
+      <form onsubmit="handleCreateSharedExpense(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Description / Bill Name</label>
+          <input type="text" id="shared-desc" required placeholder="e.g. Wifi router recharge, Groceries" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Total Bill Amount (₹)</label>
+          <input type="number" id="shared-amt" required step="1" placeholder="1500" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Paid By</label>
+          <select id="shared-paid-by" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white">
+            <option value="Priya Sharma">Priya Sharma (You)</option>
+            <option value="Rohan Mehta">Rohan Mehta</option>
+            <option value="Ananya Verma">Ananya Verma</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-teal-500 text-slate-950 font-bold text-xs">
+          Split Expense & Recompute Balances
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION & DEMO MODAL -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
       <button onclick="closeAuthModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
@@ -987,13 +1284,11 @@
         <p class="text-xs text-slate-400 mt-1">Sign in with your personal credentials or try the verified demo account</p>
       </div>
 
-      <!-- ONE-CLICK DEMO BUTTON -->
       <div class="mb-5">
         <button onclick="loginDemoAccount()" id="demo-login-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-500/25">
           <i data-lucide="zap" class="w-4 h-4"></i>
           <span>Instant Demo Login (Priya Sharma)</span>
         </button>
-        <p class="text-[10px] text-center text-slate-400 mt-1.5">Preloaded with ₹3.8L balance, salary, car loan & insurance</p>
       </div>
 
       <div class="relative flex py-2 items-center">
@@ -1002,13 +1297,11 @@
         <div class="flex-grow border-t border-slate-800"></div>
       </div>
 
-      <!-- Toggle Sign In vs Register -->
       <div class="flex p-1 bg-slate-950 rounded-xl mb-4 border border-slate-800">
         <button onclick="setAuthMode('login')" id="auth-tab-login" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white transition">Sign In</button>
         <button onclick="setAuthMode('register')" id="auth-tab-register" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Register</button>
       </div>
 
-      <!-- Auth Form -->
       <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
         <div id="auth-name-container" class="hidden">
           <label class="block text-xs font-medium text-slate-400 mb-1">Full Name</label>
@@ -1032,9 +1325,7 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- LINK NEW ACCOUNT MODAL -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
   <div id="account-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
       <button onclick="closeNewAccountModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
@@ -1054,7 +1345,7 @@
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Account Type</label>
-          <select id="acc-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+          <select id="acc-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white">
             <option value="savings">Savings Account</option>
             <option value="current">Current Account</option>
             <option value="credit_card">Credit Card</option>
@@ -1065,14 +1356,14 @@
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Bank / Institution Name</label>
           <input type="text" id="acc-bank" placeholder="e.g. HDFC Bank, SBI, ICICI" 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Current Balance (₹)</label>
           <input type="number" id="acc-balance" required step="1" placeholder="50000" 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 mono">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20">
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold text-xs">
           Save Account
         </button>
       </form>
@@ -1083,10 +1374,9 @@
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- FRONTEND APPLICATION SCRIPT LOGIC -->
+  <!-- FRONTEND APPLICATION JAVASCRIPT LOGIC -->
   <!-- ═══════════════════════════════════════════════════════════ -->
   <script>
-    // ─── STATE MANAGEMENT ─────────────────────────────────────────
     const API_BASE = window.location.origin;
     let token = localStorage.getItem('lifeos_token') || null;
     let currentUser = null;
@@ -1104,18 +1394,14 @@
       if (token) {
         await verifyAndLoadUser();
       } else {
-        // Auto-login to demo account for seamless presentation
         await loginDemoAccount();
       }
     });
 
-    // ─── MOBILE DRAWER TOGGLE ────────────────────────────────────
     function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-nav-menu');
-      menu.classList.toggle('hidden');
+      document.getElementById('mobile-nav-menu').classList.toggle('hidden');
     }
 
-    // ─── CHART INITIALIZATION ────────────────────────────────────
     function initChart() {
       const ctx = document.getElementById('cashflowChart').getContext('2d');
       cashflowChartInstance = new Chart(ctx, {
@@ -1146,9 +1432,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
             x: {
               grid: { color: 'rgba(255,255,255,0.05)' },
@@ -1167,7 +1451,6 @@
       });
     }
 
-    // ─── TAB NAVIGATION ──────────────────────────────────────────
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1184,24 +1467,21 @@
         activeBtn.classList.remove('text-slate-400');
       }
 
-      // Refresh data on tab switches
+      if (tabId === 'dashboard') { loadDashboardData(); fetchSafeToSpend(); }
       if (tabId === 'transactions') fetchTransactions();
+      if (tabId === 'defense') { fetchZombieSubscriptions(); fetchDebtPayoff(2500); queryCardReward('Shopping', 5000); }
+      if (tabId === 'tax') handleTaxFormSubmit(new Event('submit'));
+      if (tabId === 'vault') fetchHouseholdVault();
       if (tabId === 'goals') fetchGoals();
       if (tabId === 'risk') fetchRiskAssessment();
-      if (tabId === 'obligations') fetchEvents();
       if (tabId === 'accounts') fetchAccounts();
-      if (tabId === 'dashboard') loadDashboardData();
 
       lucide.createIcons();
     }
 
     // ─── AUTHENTICATION HELPERS ──────────────────────────────────
-    function openAuthModal() {
-      document.getElementById('auth-modal').classList.remove('hidden');
-    }
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
-    }
+    function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
     function setAuthMode(mode) {
       authMode = mode;
       const nameCont = document.getElementById('auth-name-container');
@@ -1238,6 +1518,7 @@
         closeAuthModal();
         showToast('Logged in as Priya Sharma (Demo Account)', 'success');
         await loadDashboardData();
+        await fetchSafeToSpend();
       } catch (err) {
         showToast(err.message, 'error');
       }
@@ -1272,6 +1553,7 @@
         closeAuthModal();
         showToast('Authentication successful!', 'success');
         await loadDashboardData();
+        await fetchSafeToSpend();
       } catch (err) {
         showToast(err.message, 'error');
       }
@@ -1296,6 +1578,7 @@
         currentUser = await res.json();
         updateUserUI();
         await loadDashboardData();
+        await fetchSafeToSpend();
       } catch (err) {
         logout();
       }
@@ -1304,12 +1587,389 @@
     function updateUserUI() {
       if (currentUser) {
         document.getElementById('user-name').innerText = currentUser.full_name;
-        // Set initials
         const initials = currentUser.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         document.getElementById('user-avatar').innerText = initials || 'PS';
         document.getElementById('user-pill').classList.remove('hidden');
         document.getElementById('user-pill').classList.add('flex');
         document.getElementById('auth-btn').classList.add('hidden');
+      }
+    }
+
+    // ─── PILLAR 2: SAFE-TO-SPEND ENGINE ──────────────────────────
+    async function fetchSafeToSpend() {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/safe-to-spend`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('s2s-amount').innerText = '₹' + Number(data.daily_safe_to_spend).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('s2s-status-badge').innerText = data.status_label;
+        document.getElementById('s2s-pool').innerText = '₹' + Number(data.discretionary_pool_total).toLocaleString('en-IN');
+        document.getElementById('s2s-spent-mtd').innerText = '₹' + Number(data.mtd_discretionary_spend).toLocaleString('en-IN');
+        document.getElementById('s2s-days-left').innerText = `${data.days_remaining} days left in month`;
+        document.getElementById('s2s-advice').innerText = data.advice;
+      } catch (e) {}
+    }
+
+    // ─── PILLAR 1: NATURAL LANGUAGE & RECEIPT INGESTION ──────────
+    function setVoiceInput(text) {
+      document.getElementById('voice-input').value = text;
+    }
+
+    async function handleNaturalLanguageIngest(e) {
+      e.preventDefault();
+      if (!token) { openAuthModal(); return; }
+
+      const text = document.getElementById('voice-input').value.trim();
+      if (!text) return;
+
+      try {
+        showToast('Parsing conversational voice/text with ML...', 'info');
+        const res = await fetch(`${API_BASE}/api/pillars/ingest/parse`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        if (!res.ok) throw new Error('Failed to parse text');
+        const parsed = await res.json();
+
+        // Directly post as transaction
+        const txnRes = await fetch(`${API_BASE}/api/transactions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            date: parsed.date,
+            description: parsed.description,
+            amount: parsed.amount,
+            transaction_type: parsed.transaction_type,
+          })
+        });
+
+        if (!txnRes.ok) throw new Error('Failed to record parsed transaction');
+        confetti({ particleCount: 30, spread: 50 });
+        showToast(`Auto-Logged: ${parsed.description} (₹${parsed.amount}) [${parsed.predicted_category}]`, 'success');
+        document.getElementById('voice-input').value = '';
+        await recomputeLifeState();
+        await fetchTransactions();
+        await fetchSafeToSpend();
+
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openReceiptScannerModal() { document.getElementById('receipt-modal').classList.remove('hidden'); }
+    function closeReceiptScannerModal() { document.getElementById('receipt-modal').classList.add('hidden'); }
+    
+    function loadSampleReceipt(type) {
+      if (type === 'starbucks') {
+        document.getElementById('receipt-ocr-input').value = 
+`STARBUCKS COFFEE INDIA\nIndiranagar Bangalore\nDate: 24/11/2026\n1x Caramel Macchiato  350.00\n1x Chocolate Croissant 280.00\nCGST 2.5%             15.75\nSGST 2.5%             15.75\nGrand Total: ₹661.50`;
+      } else {
+        document.getElementById('receipt-ocr-input').value = 
+`DMART RETAIL HYPERMARKET\nAundh Pune\nDate: 24/11/2026\nFortune Sunflower Oil 5L  680.00\nAashirvaad Atta 10kg      420.00\nTata Tea Gold 500g        280.00\nAmul Butter 500g          275.00\nTotal Bill Amount: ₹1655.00`;
+      }
+    }
+
+    async function handleReceiptOCRParse() {
+      const ocr_text = document.getElementById('receipt-ocr-input').value.trim();
+      if (!ocr_text) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/ingest/receipt`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ocr_text })
+        });
+        if (!res.ok) throw new Error('Receipt parsing failed');
+        const data = await res.json();
+
+        // Add to ledger
+        await fetch(`${API_BASE}/api/transactions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            date: data.date,
+            description: data.merchant,
+            amount: data.total_amount,
+            transaction_type: 'debit',
+          })
+        });
+
+        closeReceiptScannerModal();
+        confetti({ particleCount: 35, spread: 50 });
+        showToast(`Receipt Logged: ${data.merchant} (₹${data.total_amount}) [${data.predicted_category}]`, 'success');
+        await recomputeLifeState();
+        await fetchTransactions();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── PILLAR 4: DEFENSE & DEBT OPTIMIZER ──────────────────────
+    async function fetchZombieSubscriptions() {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/defense/zombies`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('zombie-annual-bleed').innerText = '₹' + Number(data.total_annual_bleed).toLocaleString('en-IN', { minimumFractionDigits: 2 }) + '/yr';
+        
+        const container = document.getElementById('zombie-list-container');
+        if (!data.subscriptions.length) {
+          container.innerHTML = '<div class="py-4 text-center text-slate-500 text-xs">No active recurring subscriptions detected.</div>';
+          return;
+        }
+
+        container.innerHTML = data.subscriptions.map(s => `
+          <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold text-white">${escapeHTML(s.merchant)}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${s.urgency === 'HIGH' ? 'bg-rose-500/15 text-rose-400' : 'bg-slate-800 text-slate-400'}">${s.urgency}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Cost: <strong>₹${Number(s.billing_amount).toLocaleString('en-IN')}</strong> (${s.frequency}) • Annual Bleed: <strong class="text-rose-400">₹${Number(s.annual_cost).toLocaleString('en-IN')}</strong></p>
+              <p class="text-[10px] text-cyan-400 mt-1 font-mono">💡 Cancel guide: ${escapeHTML(s.cancellation_guide)}</p>
+            </div>
+            <button onclick="showToast('Opened cancellation instructions for ${escapeHTML(s.merchant)}', 'info')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 whitespace-nowrap">
+              Cancel Sub
+            </button>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    function handleDebtPrepaySlider(val) {
+      document.getElementById('prepay-val').innerText = '₹' + Number(val).toLocaleString('en-IN') + '/mo';
+      fetchDebtPayoff(parseFloat(val));
+    }
+
+    async function fetchDebtPayoff(extra) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/defense/debt-payoff?extra_monthly=${extra}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const d = await res.json();
+
+        const container = document.getElementById('debt-payoff-summary');
+        if (!d.has_debt) {
+          container.innerHTML = `<div class="col-span-3 py-4 text-center text-xs text-emerald-400 font-semibold">🎉 Zero outstanding debts! Your household is 100% debt-free.</div>`;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Total Outstanding Debt:</span>
+            <div class="text-lg font-bold text-white mono mt-1">₹${Number(d.total_outstanding_debt).toLocaleString('en-IN')}</div>
+            <span class="text-[10px] text-slate-500">Min EMI: ₹${Number(d.total_monthly_min_emi).toLocaleString('en-IN')}/mo</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Interest Saved via +₹${extra}/mo:</span>
+            <div class="text-lg font-bold text-emerald-400 mono mt-1">₹${Number(d.interest_saved).toLocaleString('en-IN')}</div>
+            <span class="text-[10px] text-emerald-300">Debt Freedom: ${d.months_saved} months early!</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Recommended Order:</span>
+            <div class="text-xs font-bold text-cyan-400 mt-1">1. ${d.avalanche_order[0] || 'Car Loan'}</div>
+            <span class="text-[10px] text-slate-500">Mathematically optimal Avalanche</span>
+          </div>
+        `;
+      } catch (e) {}
+    }
+
+    async function queryCardReward(category, amount) {
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/defense/card-rewards?category=${encodeURIComponent(category)}&amount=${amount}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('card-reward-result').innerHTML = `
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white text-xs">${data.recommended_card}</div>
+              <div class="text-[11px] text-emerald-400 mt-0.5">${data.reward_detail}</div>
+              <div class="text-[10px] text-slate-400 mt-1">${data.tip}</div>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400">Est. Cashback</span>
+              <div class="text-base font-bold text-emerald-400 mono">+₹${data.estimated_cashback}</div>
+            </div>
+          </div>
+        `;
+      } catch (e) {}
+    }
+
+    // ─── PILLAR 5: INDIAN TAX COPILOT ────────────────────────────
+    async function handleTaxFormSubmit(e) {
+      if (e) e.preventDefault();
+      const gross = parseFloat(document.getElementById('tax-gross').value) || 1500000;
+      const hra = parseFloat(document.getElementById('tax-hra').value) || 0;
+      const sec80c = parseFloat(document.getElementById('tax-80c').value) || 0;
+      const sec80d = parseFloat(document.getElementById('tax-80d').value) || 0;
+      const sec24 = parseFloat(document.getElementById('tax-sec24').value) || 0;
+      const nps = parseFloat(document.getElementById('tax-nps').value) || 0;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/tax/compare`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gross_annual_income: gross,
+            hra_exemption: hra,
+            sec_80c: sec80c,
+            sec_80d: sec80d,
+            home_loan_sec24: sec24,
+            sec_80ccd_nps: nps,
+          })
+        });
+
+        if (!res.ok) return;
+        const d = await res.json();
+
+        const container = document.getElementById('tax-result-container');
+        container.innerHTML = `
+          <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 bg-amber-950/20 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-amber-400">Recommended Decision</span>
+              <h3 class="text-base font-extrabold text-white mt-0.5">${d.recommendation}</h3>
+              <p class="text-xs text-slate-300 mt-1">In-Hand Salary Boost: <strong class="text-emerald-400 mono">+₹${Number(d.monthly_in_hand_boost).toLocaleString('en-IN')}/month</strong></p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400">Net Tax Saved</span>
+              <div class="text-2xl font-extrabold text-emerald-400 mono">₹${Number(d.annual_tax_savings).toLocaleString('en-IN')}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="glass-card rounded-3xl p-6 border ${d.winner === 'New Regime' ? 'border-2 border-emerald-500/50 glow-emerald' : 'border-slate-800'}">
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-white uppercase">New Tax Regime (Section 115BAC)</span>
+                ${d.winner === 'New Regime' ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-black font-extrabold">WINNER</span>' : ''}
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between text-slate-400"><span>Standard Deduction:</span><span class="text-slate-200 mono">₹75,000.00</span></div>
+                <div class="flex justify-between text-slate-400"><span>Taxable Income:</span><span class="text-slate-200 mono">₹${Number(d.new_regime.taxable_income).toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-slate-400"><span>Effective Tax Rate:</span><span class="text-slate-200 mono">${d.new_regime.effective_tax_rate}%</span></div>
+                <div class="pt-2 border-t border-slate-800 flex justify-between font-bold text-sm">
+                  <span class="text-white">Total Tax Payable:</span>
+                  <span class="text-amber-400 mono">₹${Number(d.new_regime.total_tax_payable).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 border ${d.winner === 'Old Regime' ? 'border-2 border-emerald-500/50 glow-emerald' : 'border-slate-800'}">
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-white uppercase">Old Tax Regime (With Deductions)</span>
+                ${d.winner === 'Old Regime' ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-black font-extrabold">WINNER</span>' : ''}
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between text-slate-400"><span>Total Deductions Claimed:</span><span class="text-emerald-400 mono">₹${Number(d.old_regime.total_deductions).toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-slate-400"><span>Taxable Income:</span><span class="text-slate-200 mono">₹${Number(d.old_regime.taxable_income).toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-slate-400"><span>Effective Tax Rate:</span><span class="text-slate-200 mono">${d.old_regime.effective_tax_rate}%</span></div>
+                <div class="pt-2 border-t border-slate-800 flex justify-between font-bold text-sm">
+                  <span class="text-white">Total Tax Payable:</span>
+                  <span class="text-amber-400 mono">₹${Number(d.old_regime.total_tax_payable).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (e) {}
+    }
+
+    // ─── PILLAR 6: HOUSEHOLD SHARED VAULT ────────────────────────
+    async function fetchHouseholdVault() {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/household/vault`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const d = await res.json();
+
+        document.getElementById('vault-total').innerText = '₹' + Number(d.total_shared_spend).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('vault-share').innerText = '₹' + Number(d.per_person_share).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+        // Settlements list
+        const setCont = document.getElementById('vault-settlements-list');
+        if (!d.settlements.length) {
+          setCont.innerHTML = '<div class="text-xs text-emerald-400 font-semibold py-2">All flatmate accounts are fully balanced!</div>';
+        } else {
+          setCont.innerHTML = d.settlements.map(s => `
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span class="font-bold text-white">${s.summary}</span>
+              </div>
+              <button onclick="showToast('Initiating UPI settlement for ₹${s.amount}...', 'success')" class="px-3 py-1 rounded-lg bg-teal-500/15 text-teal-300 font-bold border border-teal-500/30 hover:bg-teal-500/25">
+                Pay via UPI
+              </button>
+            </div>
+          `).join('');
+        }
+
+        // Expenses list
+        const expCont = document.getElementById('vault-expenses-list');
+        expCont.innerHTML = d.expenses.map(e => `
+          <div class="p-4 flex justify-between items-center">
+            <div>
+              <div class="font-bold text-white text-xs">${escapeHTML(e.description)}</div>
+              <div class="text-[10px] text-slate-400">Paid by <strong class="text-cyan-400">${e.paid_by}</strong> on ${e.date} • ${e.category}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-white mono">₹${Number(e.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              <span class="text-[10px] text-slate-500">₹${Number(e.amount / 3).toFixed(0)}/person</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    function openAddSharedExpenseModal() { document.getElementById('shared-modal').classList.remove('hidden'); }
+    function closeAddSharedExpenseModal() { document.getElementById('shared-modal').classList.add('hidden'); }
+
+    async function handleCreateSharedExpense(e) {
+      e.preventDefault();
+      const desc = document.getElementById('shared-desc').value;
+      const amt = parseFloat(document.getElementById('shared-amt').value);
+      const paid_by = document.getElementById('shared-paid-by').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/household/split`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            description: desc,
+            amount: amt,
+            paid_by: paid_by,
+            category: 'Household Services'
+          })
+        });
+
+        if (!res.ok) throw new Error('Failed to record shared expense');
+        closeAddSharedExpenseModal();
+        confetti({ particleCount: 30, spread: 50 });
+        showToast(`Shared Bill Split: ₹${amt.toLocaleString('en-IN')}`, 'success');
+        await fetchHouseholdVault();
+      } catch (err) {
+        showToast(err.message, 'error');
       }
     }
 
@@ -1323,7 +1983,6 @@
         if (!res.ok) return;
         const data = await res.json();
 
-        // Life state metrics
         if (data.life_state) {
           const ls = data.life_state;
           document.getElementById('stat-balance').innerText = '₹' + Number(ls.total_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -1332,7 +1991,6 @@
           document.getElementById('stat-income-burn').innerText = `In: ₹${(ls.monthly_income/1000).toFixed(0)}k | Burn: ₹${(ls.monthly_expenses/1000).toFixed(0)}k`;
           document.getElementById('stat-risk-score').innerText = `${Number(ls.financial_risk_score).toFixed(0)}/100`;
 
-          // Runway status styling
           const runwayEl = document.getElementById('runway-status');
           if (ls.emergency_runway_months >= 6) {
             runwayEl.innerHTML = '<i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i>Healthy Safety Net';
@@ -1347,13 +2005,9 @@
           lucide.createIcons();
         }
 
-        // Fetch insights
         fetchWhatChanged();
         fetchWhatAmIForgetting();
-
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
     async function recomputeLifeState() {
@@ -1366,6 +2020,7 @@
         });
         if (!res.ok) throw new Error('Failed to recompute state');
         await loadDashboardData();
+        await fetchSafeToSpend();
         showToast('Life state updated with latest data!', 'success');
       } catch (err) {
         showToast(err.message, 'error');
@@ -1432,7 +2087,6 @@
             badge.classList.remove('hidden');
             badge.classList.add('flex');
 
-            // Pre-select category in dropdown if matching
             const matchedCat = categoriesList.find(c => c.name.toLowerCase() === data.predicted_category.toLowerCase());
             if (matchedCat) {
               document.getElementById('txn-category').value = matchedCat.id;
@@ -1441,13 +2095,6 @@
           }
         } catch (e) {}
       }, 200);
-    }
-
-    function fillPresetTxn(desc, amount, type) {
-      document.getElementById('txn-description').value = desc;
-      document.getElementById('txn-amount').value = amount;
-      document.getElementById('txn-type').value = type;
-      handleNarrationInput(desc);
     }
 
     async function handleAddTransaction(e) {
@@ -1482,10 +2129,9 @@
         document.getElementById('add-transaction-form').reset();
         document.getElementById('ml-prediction-badge').classList.add('hidden');
 
-        // Recompute life state and refresh ledger
         await recomputeLifeState();
         await fetchTransactions();
-
+        await fetchSafeToSpend();
       } catch (err) {
         showToast(err.message, 'error');
       }
@@ -1548,31 +2194,6 @@
       renderTransactions(filtered);
     }
 
-    async function handleCSVUpload(e) {
-      const file = e.target.files[0];
-      if (!file || !token) return;
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        showToast('Importing and classifying CSV statements with ML...', 'info');
-        const res = await fetch(`${API_BASE}/api/transactions/import/csv`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
-        });
-
-        if (!res.ok) throw new Error('CSV Import failed');
-        const result = await res.json();
-        showToast(`Imported ${result.imported_count || result.total_imported || 'transactions'} successfully!`, 'success');
-        await recomputeLifeState();
-        await fetchTransactions();
-      } catch (err) {
-        showToast(err.message, 'error');
-      }
-    }
-
     // ─── DECISION SIMULATOR ──────────────────────────────────────
     function setSimPreset(title, amount, tenure, interest) {
       document.getElementById('sim-title').value = title;
@@ -1613,10 +2234,8 @@
         if (!res.ok) throw new Error('Simulation calculation failed');
         const sim = await res.json();
 
-        // Render Recommendation
         document.getElementById('sim-rec-text').innerText = sim.recommendation;
 
-        // Render Scenarios
         const scMap = {};
         sim.scenarios.forEach(s => scMap[s.name] = s);
 
@@ -1645,7 +2264,7 @@
         showToast(err.message, 'error');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i><span>Simulate All 3 Scenarios</span>';
+        btn.innerHTML = '<i data-lucide="shield-alert" class="w-4 h-4"></i><span>Intercept & Run Decision Matrix</span>';
         lucide.createIcons();
       }
     }
@@ -1878,53 +2497,6 @@
       } catch (e) {}
     }
 
-    // ─── OBLIGATIONS & HORIZONS ──────────────────────────────────
-    async function fetchEvents() {
-      if (!token) return;
-      try {
-        const hRes = await fetch(`${API_BASE}/api/events/horizon`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (hRes.ok) {
-          const h = await hRes.json();
-          document.getElementById('horizon-30d').innerText = '₹' + Number(h.total_30d || 14500).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-          document.getElementById('horizon-60d').innerText = '₹' + Number(h.total_60d || 33000).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-          document.getElementById('horizon-90d').innerText = '₹' + Number(h.total_90d || 47500).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-        }
-
-        const eRes = await fetch(`${API_BASE}/api/events?limit=20`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (eRes.ok) {
-          const events = await eRes.json();
-          const list = document.getElementById('events-list-container');
-          if (!events.length) {
-            list.innerHTML = '<div class="p-8 text-center text-xs text-slate-500 font-medium">No upcoming contractual obligations found.</div>';
-            return;
-          }
-
-          list.innerHTML = events.map(ev => `
-            <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-800/30 transition">
-              <div class="flex items-center space-x-3.5">
-                <div class="p-2.5 rounded-xl bg-slate-800 text-cyan-400 border border-slate-700/80">
-                  <i data-lucide="calendar" class="w-4 h-4"></i>
-                </div>
-                <div>
-                  <div class="text-xs font-bold text-white">${escapeHTML(ev.title)}</div>
-                  <div class="text-[11px] text-slate-400">Due Date: ${ev.event_date} • Type: ${ev.event_type}</div>
-                </div>
-              </div>
-              <div class="text-right">
-                <div class="text-xs font-bold text-white mono">₹${Number(ev.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${ev.status}</span>
-              </div>
-            </div>
-          `).join('');
-          lucide.createIcons();
-        }
-      } catch (e) {}
-    }
-
     // ─── BANK ACCOUNTS & LIQUID PORTFOLIO ────────────────────────
     async function fetchAccounts() {
       if (!token) return;
@@ -1941,7 +2513,6 @@
     function renderAccounts(accounts) {
       const container = document.getElementById('accounts-container');
       if (!accounts.length) {
-        // Pre-render standard showcase cards if empty
         container.innerHTML = `
           <div class="bank-card-gradient-hdfc rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-48">
             <div class="flex justify-between items-start">
@@ -2008,12 +2579,8 @@
       }).join('');
     }
 
-    function openNewAccountModal() {
-      document.getElementById('account-modal').classList.remove('hidden');
-    }
-    function closeNewAccountModal() {
-      document.getElementById('account-modal').classList.add('hidden');
-    }
+    function openNewAccountModal() { document.getElementById('account-modal').classList.remove('hidden'); }
+    function closeNewAccountModal() { document.getElementById('account-modal').classList.add('hidden'); }
 
     async function handleCreateAccount(e) {
       e.preventDefault();

@@ -87,6 +87,7 @@ from app.api.simulations import router as simulations_router
 from app.api.rag import router as rag_router
 from app.api.agent import router as agent_router
 from app.api.goals import router as goals_router
+from app.api.pillars import router as pillars_router
 
 app.include_router(auth_router)
 app.include_router(accounts_router)
@@ -106,6 +107,7 @@ app.include_router(risk_router)
 app.include_router(simulations_router)
 app.include_router(rag_router)
 app.include_router(agent_router)
+app.include_router(pillars_router)
 
 # Mount Web Application Static Files
 import os
