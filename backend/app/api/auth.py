@@ -99,6 +99,9 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
 
     if not user:
+        from datetime import datetime, timezone
+        from app.models.models import LifeState, RiskLevel
+
         user = User(
             email=demo_email,
             hashed_password=hash_password("DemoPassword123!"),
@@ -110,15 +113,26 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
         await db.flush()
         await db.refresh(user)
 
-        # Create Primary Bank Account
+        # Create Bank Accounts (Primary Savings + Emergency FD = ₹3,80,000 total)
         account = Account(
             user_id=user.id,
             name="HDFC Salary & Savings",
             account_type=AccountType.SAVINGS,
-            current_balance=Decimal("380000.00"),
+            bank_name="HDFC Bank",
+            account_number_masked="4012",
+            current_balance=Decimal("180000.00"),
             is_primary=True,
         )
-        db.add(account)
+        fd_account = Account(
+            user_id=user.id,
+            name="SBI Emergency Fixed Deposit",
+            account_type=AccountType.SAVINGS,
+            bank_name="State Bank of India",
+            account_number_masked="8821",
+            current_balance=Decimal("200000.00"),
+            is_primary=False,
+        )
+        db.add_all([account, fd_account])
         await db.flush()
         await db.refresh(account)
 
@@ -137,6 +151,7 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
                 description="Infosys Technologies Monthly Salary",
                 amount=Decimal("120000.00"),
                 transaction_type=TransactionType.CREDIT,
+                category_ml_confidence=0.96,
             ))
             db.add(Transaction(
                 user_id=user.id,
@@ -146,6 +161,7 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
                 description="House Rent Transfer to Landlord",
                 amount=Decimal("35000.00"),
                 transaction_type=TransactionType.DEBIT,
+                category_ml_confidence=0.96,
             ))
             db.add(Transaction(
                 user_id=user.id,
@@ -155,6 +171,7 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
                 description="BigBasket Weekly Household Groceries",
                 amount=Decimal("12000.00"),
                 transaction_type=TransactionType.DEBIT,
+                category_ml_confidence=0.96,
             ))
 
         # Loan
@@ -169,6 +186,8 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
             emi_amount=Decimal("14500.00"),
             start_date=today - timedelta(days=365),
             emi_day=10,
+            total_emis=36,
+            emis_paid=12,
             status=LoanStatus.ACTIVE,
         ))
 
@@ -183,27 +202,70 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
             expiry_date=today + timedelta(days=45),
         ))
 
-        # Subscription
-        db.add(Subscription(
-            user_id=user.id,
-            name="Netflix Premium",
-            provider="Netflix",
-            amount=Decimal("649.00"),
-            frequency=SubscriptionFrequency.MONTHLY,
-            next_billing_date=today + timedelta(days=12),
-            status=SubscriptionStatus.ACTIVE,
-        ))
+        # Active Subscriptions (for Zombie Hunter & Life State)
+        db.add_all([
+            Subscription(
+                user_id=user.id,
+                name="Netflix Premium",
+                provider="Netflix",
+                amount=Decimal("649.00"),
+                frequency=SubscriptionFrequency.MONTHLY,
+                next_billing_date=today + timedelta(days=12),
+                category="entertainment",
+                status=SubscriptionStatus.ACTIVE,
+            ),
+            Subscription(
+                user_id=user.id,
+                name="Cult.fit Pro Gym",
+                provider="Cult.fit",
+                amount=Decimal("1499.00"),
+                frequency=SubscriptionFrequency.MONTHLY,
+                next_billing_date=today + timedelta(days=18),
+                category="fitness",
+                status=SubscriptionStatus.ACTIVE,
+            ),
+            Subscription(
+                user_id=user.id,
+                name="Amazon Prime Membership",
+                provider="Amazon",
+                amount=Decimal("1499.00"),
+                frequency=SubscriptionFrequency.YEARLY,
+                next_billing_date=today + timedelta(days=65),
+                category="shopping",
+                status=SubscriptionStatus.ACTIVE,
+            ),
+        ])
 
-        # Events
-        db.add(Event(
-            user_id=user.id,
-            event_type=EventType.LOAN_EMI,
-            title="Car Loan EMI Due",
-            event_date=today + timedelta(days=10),
-            amount=Decimal("14500.00"),
-            status=EventStatus.UPCOMING,
-            source_type="loan",
-        ))
+        # Events (within 7 days + 10 days + 45 days for Radar & Horizons)
+        db.add_all([
+            Event(
+                user_id=user.id,
+                event_type=EventType.BILL_DUE,
+                title="BESCOM Electricity Bill Due",
+                event_date=today + timedelta(days=4),
+                amount=Decimal("2150.00"),
+                status=EventStatus.UPCOMING,
+                source_type="bill",
+            ),
+            Event(
+                user_id=user.id,
+                event_type=EventType.LOAN_EMI,
+                title="Car Loan EMI Due",
+                event_date=today + timedelta(days=10),
+                amount=Decimal("14500.00"),
+                status=EventStatus.UPCOMING,
+                source_type="loan",
+            ),
+            Event(
+                user_id=user.id,
+                event_type=EventType.INSURANCE_RENEWAL,
+                title="Star Health Optima Renewal",
+                event_date=today + timedelta(days=45),
+                amount=Decimal("18500.00"),
+                status=EventStatus.UPCOMING,
+                source_type="insurance",
+            ),
+        ])
 
         # Goal
         db.add(Goal(
@@ -215,10 +277,25 @@ async def demo_login(db: AsyncSession = Depends(get_db)):
             status=GoalStatus.ACTIVE,
             priority=1,
         ))
+
+        # Historical Baseline Snapshot (30 days ago) for "What Changed?" comparison
+        db.add(LifeState(
+            user_id=user.id,
+            snapshot_date=datetime.now(timezone.utc) - timedelta(days=30),
+            total_balance=Decimal("325000.00"),
+            monthly_income=Decimal("120000.00"),
+            monthly_expenses=Decimal("52500.00"),
+            monthly_savings=Decimal("67500.00"),
+            savings_rate=0.5625,
+            emergency_runway_months=6.2,
+            financial_risk_score=24.0,
+            risk_level=RiskLevel.LOW,
+        ))
+
         await db.commit()
         await db.refresh(user)
 
-        # Initial Life State computation
+        # Current Life State computation (automatically calculates delta vs 30d ago)
         lse = LifeStateEngine(db, user.id)
         await lse.recompute_state()
 

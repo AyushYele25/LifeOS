@@ -296,12 +296,36 @@ class AgentService:
         """Extract item name and amount from a purchase query."""
         params: Dict[str, Any] = {}
 
-        # Extract amount — look for ₹, Rs, INR followed by numbers
-        amount_match = re.search(
-            r'(?:₹|rs\.?|inr)\s*([\d,]+(?:\.\d{1,2})?)', message, re.IGNORECASE
+        # 1. Check Indian shorthand multipliers: lakh/lac/L, crore/cr, k
+        lakh_match = re.search(
+            r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*(?:lakhs?|lacs?|l)\b',
+            message,
+            re.IGNORECASE,
         )
-        if amount_match:
-            params["amount"] = float(amount_match.group(1).replace(",", ""))
+        crore_match = re.search(
+            r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*(?:crores?|cr)\b',
+            message,
+            re.IGNORECASE,
+        )
+        k_match = re.search(
+            r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*k\b',
+            message,
+            re.IGNORECASE,
+        )
+
+        if crore_match:
+            params["amount"] = float(crore_match.group(1)) * 10000000.0
+        elif lakh_match:
+            params["amount"] = float(lakh_match.group(1)) * 100000.0
+        elif k_match:
+            params["amount"] = float(k_match.group(1)) * 1000.0
+        else:
+            # Extract explicit currency amount — look for ₹, Rs, INR followed by numbers
+            amount_match = re.search(
+                r'(?:₹|rs\.?|inr)\s*([\d,]+(?:\.\d{1,2})?)', message, re.IGNORECASE
+            )
+            if amount_match:
+                params["amount"] = float(amount_match.group(1).replace(",", ""))
 
         # Also check for standalone large numbers
         if "amount" not in params:
@@ -309,24 +333,32 @@ class AgentService:
             if num_match:
                 params["amount"] = float(num_match.group(1))
 
-        # Extract item name — text between "buy/afford" and amount, or after "buy/afford"
-        item_match = re.search(
-            r'(?:buy|afford|purchase)\s+(?:a\s+)?(.+?)(?:\s+(?:for|at|worth|costing|₹|rs|inr|\d))',
-            message, re.IGNORECASE
+        # Extract item name — strip filler verbs & currency modifiers first
+        cleaned_for_item = re.sub(
+            r'(?:₹|rs\.?|inr)\s*[\d,.]+\s*(?:lakhs?|lacs?|l|crores?|cr|k)?',
+            '',
+            message,
+            flags=re.IGNORECASE,
         )
-        if item_match:
-            params["item"] = item_match.group(1).strip().rstrip("?")
+        cleaned_for_item = re.sub(
+            r'\b\d+(?:\.\d+)?\s*(?:lakhs?|lacs?|crores?|cr|k)?\s*(?:rupees?|inr)?\b',
+            '',
+            cleaned_for_item,
+            flags=re.IGNORECASE,
+        )
+        cleaned_for_item = re.sub(
+            r'\b(?:can i afford|should i|to buy|buy|afford|purchase|right now|for|worth|costing|at|a|an)\b',
+            ' ',
+            cleaned_for_item,
+            flags=re.IGNORECASE,
+        )
+        cleaned_for_item = re.sub(r'[?!.]', '', cleaned_for_item)
+        cleaned_for_item = re.sub(r'\s+', ' ', cleaned_for_item).strip()
+        if cleaned_for_item:
+            params["item"] = cleaned_for_item
         else:
-            # Fallback — grab the noun after "buy/afford"
-            simple_match = re.search(
-                r'(?:buy|afford|purchase)\s+(?:a\s+)?(\w+(?:\s+\w+)?)',
-                message, re.IGNORECASE
-            )
-            if simple_match:
-                params["item"] = simple_match.group(1).strip().rstrip("?")
-
-        if "item" not in params:
             params["item"] = "item"
+
         if "amount" not in params:
             params["amount"] = 0
 
@@ -554,12 +586,14 @@ class AgentService:
     def _format_life_state(self, s: Dict[str, Any]) -> str:
         risk_emoji = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
         emoji = risk_emoji.get(s.get("risk_level", "low"), "⚪")
+        sr = float(s.get("savings_rate") or 0)
+        sr_pct = round(sr * 100, 1) if abs(sr) <= 1.0 else round(sr, 1)
         lines = [
             "📊 **Financial Snapshot**",
             f"• Liquid Balance: {self._fmt_inr(s['total_balance'])}",
             f"• Monthly Income: {self._fmt_inr(s['monthly_income'])}",
             f"• Monthly Expenses: {self._fmt_inr(s['monthly_expenses'])}",
-            f"• Monthly Savings: {self._fmt_inr(s['monthly_savings'])} ({s['savings_rate']}%)",
+            f"• Monthly Savings: {self._fmt_inr(s['monthly_savings'])} ({sr_pct}%)",
             f"• Emergency Runway: {s['emergency_runway_months']} months",
             f"• Risk Score: {s['financial_risk_score']}/100 {emoji} ({s['risk_level'].upper()})",
         ]
@@ -618,12 +652,14 @@ class AgentService:
     def _format_risk(self, s: Dict[str, Any]) -> str:
         risk_emoji = {"low": "🟢", "medium": "🟡", "high": "🟠", "critical": "🔴"}
         emoji = risk_emoji.get(s.get("risk_level", "low"), "⚪")
+        sr_r = float(s.get("savings_rate") or 0)
+        sr_r_pct = round(sr_r * 100, 1) if abs(sr_r) <= 1.0 else round(sr_r, 1)
         lines = [
             f"🛡️ **Financial Risk Assessment** {emoji}",
             f"• Composite Score: {s['composite_risk_score']}/100 (Grade: {s['risk_grade']})",
             f"• Risk Level: {s['risk_level'].upper()}",
             f"• Debt-to-Income: {round(s['dti_ratio'] * 100, 1) if s['dti_ratio'] < 1 else round(s['dti_ratio'], 1)}%",
-            f"• Savings Rate: {round(s['savings_rate'], 1)}%",
+            f"• Savings Rate: {sr_r_pct}%",
             f"• Emergency Runway: {round(s['emergency_runway_months'], 1)} months",
         ]
         if s.get("vulnerabilities"):

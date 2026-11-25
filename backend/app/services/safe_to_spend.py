@@ -6,25 +6,37 @@ contractual fixed obligations (rent, loans, subscriptions), and wealth goal targ
 """
 
 from datetime import date
-from decimal import Decimal
 import calendar
 from typing import Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, func, desc
 
-from app.models import User, LifeState, Transaction, Event, Goal, Loan, Subscription
-from app.models.models import TransactionType
+from app.models import LifeState, Transaction, Goal, Loan, Subscription
+from app.models.models import TransactionType, LoanStatus, SubscriptionStatus, GoalStatus
+
+FIXED_CATEGORIES = {
+    "Rent",
+    "EMI & Loans",
+    "Utilities",
+    "Electricity",
+    "Mobile & Internet",
+    "Insurance",
+    "Subscriptions",
+    "Groceries",
+}
 
 
-async def compute_safe_to_spend(user_id: Any, db: AsyncSession, target_date: date = None) -> Dict[str, Any]:
+async def compute_safe_to_spend(
+    user_id: Any, db: AsyncSession, target_date: date = None
+) -> Dict[str, Any]:
     """
     Computes real-time daily safe-to-spend allowance:
     Formula:
         Monthly Income
-      - Contractual Fixed Floor (Rent + Loans + Subscriptions + Insurance)
+      - Contractual Fixed Floor (Rent + Loans + Subscriptions + Utilities)
       - Planned Wealth & Goal Savings Target
       = Free Discretionary Pool
-      
+
       Dynamic Daily Allowance = (Remaining Discretionary Pool) / (Remaining Days in Month)
     """
     today = target_date or date.today()
@@ -33,7 +45,7 @@ async def compute_safe_to_spend(user_id: Any, db: AsyncSession, target_date: dat
     days_remaining = max(1, days_in_month - day_of_month + 1)
     month_start = today.replace(day=1)
 
-    # 1. Fetch latest life state or fallbacks
+    # 1. Fetch latest life state
     ls_result = await db.execute(
         select(LifeState)
         .where(LifeState.user_id == user_id)
@@ -42,72 +54,106 @@ async def compute_safe_to_spend(user_id: Any, db: AsyncSession, target_date: dat
     )
     life_state = ls_result.scalar_one_or_none()
 
-    monthly_income = float(life_state.monthly_income) if life_state and life_state.monthly_income else 120000.0
-    
-    # 2. Compute Contractual Fixed Floor from Loans and Subscriptions
-    # Loans monthly EMI sum
+    monthly_income = (
+        float(life_state.monthly_income)
+        if life_state and life_state.monthly_income and float(life_state.monthly_income) > 0
+        else 120000.0
+    )
+
+    # 2. Compute Contractual Fixed Floor from Active Loans and Subscriptions
     loans_result = await db.execute(
-        select(func.coalesce(func.sum(Loan.monthly_payment), 0))
-        .where(and_(Loan.user_id == user_id, Loan.is_active == True))
+        select(func.coalesce(func.sum(Loan.emi_amount), 0)).where(
+            and_(Loan.user_id == user_id, Loan.status == LoanStatus.ACTIVE)
+        )
     )
     loans_monthly = float(loans_result.scalar() or 0.0)
 
-    # Subscriptions monthly sum
     subs_result = await db.execute(
-        select(func.coalesce(func.sum(Subscription.amount), 0))
-        .where(and_(Subscription.user_id == user_id, Subscription.is_active == True))
+        select(func.coalesce(func.sum(Subscription.amount), 0)).where(
+            and_(
+                Subscription.user_id == user_id,
+                Subscription.status == SubscriptionStatus.ACTIVE,
+            )
+        )
     )
     subs_monthly = float(subs_result.scalar() or 0.0)
 
-    # Fixed living baseline (Rent + Utilities + Groceries necessity floor)
-    fixed_necessity_floor = float(life_state.fixed_expenses) if life_state and life_state.fixed_expenses else max(30000.0, loans_monthly + subs_monthly + 15000.0)
-    fixed_obligations_total = max(loans_monthly + subs_monthly, fixed_necessity_floor)
+    # Estimate fixed living baseline from LifeState breakdown or monthly expenses
+    fixed_from_categories = 0.0
+    if life_state and life_state.expense_by_category:
+        # expense_by_category stores cumulative totals; compute fixed share ratio
+        cat_dict = life_state.expense_by_category
+        total_cat_spend = sum(float(v) for v in cat_dict.values())
+        fixed_cat_spend = sum(
+            float(v) for k, v in cat_dict.items() if k in FIXED_CATEGORIES
+        )
+        if total_cat_spend > 0 and life_state.monthly_expenses:
+            fixed_ratio = fixed_cat_spend / total_cat_spend
+            fixed_from_categories = float(life_state.monthly_expenses) * fixed_ratio
+
+    baseline_fixed = max(
+        fixed_from_categories,
+        loans_monthly + subs_monthly,
+        float(life_state.monthly_expenses) * 0.7 if life_state and life_state.monthly_expenses else 30000.0,
+    )
+    fixed_obligations_total = min(monthly_income * 0.85, baseline_fixed)
 
     # 3. Monthly Goal Targets
     goals_result = await db.execute(
-        select(Goal).where(and_(Goal.user_id == user_id, Goal.status == "in_progress"))
+        select(Goal).where(
+            and_(Goal.user_id == user_id, Goal.status == GoalStatus.ACTIVE)
+        )
     )
     goals = goals_result.scalars().all()
-    # Assume 15% to 25% of income target savings if no explicit monthly contribution
-    monthly_goal_savings = monthly_income * 0.25 if not goals else sum(
-        float(g.target_amount - g.current_amount) / 12.0 for g in goals if g.target_amount > g.current_amount
+    monthly_goal_savings = (
+        monthly_income * 0.25
+        if not goals
+        else sum(
+            float(g.target_amount - g.current_amount) / 12.0
+            for g in goals
+            if g.target_amount > g.current_amount
+        )
     )
-    monthly_goal_savings = min(monthly_goal_savings, monthly_income * 0.35)
+    monthly_goal_savings = min(
+        monthly_goal_savings, max(0.0, (monthly_income - fixed_obligations_total) * 0.5)
+    )
 
     # 4. Total Discretionary Pool for Month
-    discretionary_pool_total = max(0.0, monthly_income - fixed_obligations_total - monthly_goal_savings)
+    discretionary_pool_total = max(
+        0.0, monthly_income - fixed_obligations_total - monthly_goal_savings
+    )
     baseline_daily_allowance = discretionary_pool_total / days_in_month
 
-    # 5. Month-to-date actual discretionary spending
+    # 5. Month-to-date actual spending
     mtd_spend_result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.amount), 0))
-        .where(
+        select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             and_(
                 Transaction.user_id == user_id,
                 Transaction.transaction_type == TransactionType.DEBIT,
                 Transaction.date >= month_start,
-                Transaction.date <= today
+                Transaction.date <= today,
             )
         )
     )
     mtd_total_spend = float(mtd_spend_result.scalar() or 0.0)
-    
-    # Approximate discretionary fraction (total spend minus pro-rated fixed obligations)
+
+    # Pro-rate fixed obligations over elapsed days to isolate discretionary burn
     pro_rated_fixed = (fixed_obligations_total / days_in_month) * day_of_month
     mtd_discretionary_spend = max(0.0, mtd_total_spend - pro_rated_fixed)
 
     # 6. Remaining Discretionary Pool & Today's Allowance
-    remaining_discretionary_pool = max(0.0, discretionary_pool_total - mtd_discretionary_spend)
+    remaining_discretionary_pool = max(
+        0.0, discretionary_pool_total - mtd_discretionary_spend
+    )
     daily_safe_to_spend = remaining_discretionary_pool / days_remaining
 
     # 7. Today's actual spending so far
     today_spend_result = await db.execute(
-        select(func.coalesce(func.sum(Transaction.amount), 0))
-        .where(
+        select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             and_(
                 Transaction.user_id == user_id,
                 Transaction.transaction_type == TransactionType.DEBIT,
-                Transaction.date == today
+                Transaction.date == today,
             )
         )
     )
@@ -128,20 +174,25 @@ async def compute_safe_to_spend(user_id: Any, db: AsyncSession, target_date: dat
         status_label = "🔴 Budget Constrained"
         color = "rose"
 
-    # Actionable advice
     if today_remaining_allowance > 0:
-        advice = f"You can comfortably spend up to ₹{today_remaining_allowance:,.0f} today. Your rent, EMIs, and monthly goals are fully protected."
+        advice = (
+            f"You can comfortably spend up to ₹{today_remaining_allowance:,.0f} today. "
+            "Your rent, EMIs, and monthly goals are fully protected."
+        )
     else:
-        advice = f"Daily budget reached for today (₹{today_spent:,.0f} spent). Limit non-essential expenses until tomorrow morning."
+        advice = (
+            f"Daily budget reached for today (₹{today_spent:,.0f} spent). "
+            "Limit non-essential expenses until tomorrow morning."
+        )
 
     return {
         "today_date": str(today),
         "days_in_month": days_in_month,
         "day_of_month": day_of_month,
         "days_remaining": days_remaining,
-        "monthly_income": monthly_income,
-        "fixed_obligations_total": fixed_obligations_total,
-        "monthly_goal_savings": monthly_goal_savings,
+        "monthly_income": round(monthly_income, 2),
+        "fixed_obligations_total": round(fixed_obligations_total, 2),
+        "monthly_goal_savings": round(monthly_goal_savings, 2),
         "discretionary_pool_total": round(discretionary_pool_total, 2),
         "baseline_daily_allowance": round(baseline_daily_allowance, 2),
         "mtd_discretionary_spend": round(mtd_discretionary_spend, 2),
@@ -154,4 +205,3 @@ async def compute_safe_to_spend(user_id: Any, db: AsyncSession, target_date: dat
         "status_color": color,
         "advice": advice,
     }
-

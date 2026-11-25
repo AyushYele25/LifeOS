@@ -59,10 +59,15 @@ def parse_natural_language_expense(text: str) -> Dict[str, Any]:
         amount = 100.0  # Fallback reasonable default
 
     # 3. Clean Description / Merchant
-    # Remove amount fragments
-    desc = re.sub(r"(?:₹|rs\.?|inr|rupees)\s*\d+(\.\d+)?", "", cleaned, flags=re.IGNORECASE)
-    desc = re.sub(r"\b(spent|paid|for|at|on|via|credited|received|today|yesterday)\b", "", desc, flags=re.IGNORECASE)
-    desc = re.sub(r"\s+", " ", desc).strip()
+    # Remove amount tokens & filler verbs while preserving merchant keywords
+    desc = re.sub(
+        r"(?:₹|rs\.?|inr|rupees)?\s*\b\d+(?:,\d+)*(?:\.\d{1,2})?\s*(?:k|lakhs?|lacs?|rs\.?|inr|rupees)?\b",
+        "",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    desc = re.sub(r"\b(spent|paid|for|at|on|via|credited|received|today|yesterday|from|to)\b", "", desc, flags=re.IGNORECASE)
+    desc = re.sub(r"\s+", " ", desc).strip(" -.,")
     if not desc or len(desc) < 3:
         desc = cleaned
 

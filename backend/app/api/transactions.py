@@ -16,8 +16,8 @@ import json
 import os
 
 from app.database import get_db
-from app.models import User, Transaction, Category, AuditLog
-from app.models.models import TransactionType
+from app.models import User, Transaction, Category, AuditLog, Account
+from app.models.models import TransactionType, AccountType
 from app.schemas.schemas import (
     TransactionCreate, TransactionResponse, TransactionUpdate,
     TransactionFilter, PaginatedResponse, CategoryCorrectionRequest,
@@ -93,20 +93,74 @@ async def create_transaction(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Create a single transaction."""
+    """Create a single transaction with automatic ML categorization when category_id is omitted."""
+    cat_id = data.category_id
+    ml_conf = None
+    is_user_classified = cat_id is not None
+
+    if cat_id is None:
+        classifier = get_classifier()
+        pred_cat, conf, _ = classifier.predict(data.description)
+        ml_conf = round(float(conf), 4)
+        cat_res = await db.execute(
+            select(Category).where(
+                and_(
+                    or_(Category.user_id == current_user.id, Category.is_system == True),
+                    func.lower(Category.name) == pred_cat.lower(),
+                )
+            ).limit(1)
+        )
+        matched_cat = cat_res.scalar_one_or_none()
+        if matched_cat:
+            cat_id = matched_cat.id
+
+    account_id = data.account_id
+    target_account = None
+    if account_id is not None:
+        acc_res = await db.execute(
+            select(Account).where(and_(Account.id == account_id, Account.user_id == current_user.id))
+        )
+        target_account = acc_res.scalar_one_or_none()
+    else:
+        acc_res = await db.execute(
+            select(Account)
+            .where(and_(Account.user_id == current_user.id, Account.is_active == True))
+            .order_by(Account.is_primary.desc(), Account.created_at.asc())
+            .limit(1)
+        )
+        target_account = acc_res.scalar_one_or_none()
+        if target_account:
+            account_id = target_account.id
+
     transaction = Transaction(
         user_id=current_user.id,
         date=data.date,
         description=data.description,
         amount=data.amount,
         transaction_type=data.transaction_type,
-        account_id=data.account_id,
-        category_id=data.category_id,
+        account_id=account_id,
+        category_id=cat_id,
+        category_ml_confidence=ml_conf,
+        is_classified_by_user=is_user_classified,
         merchant=data.merchant,
         notes=data.notes,
         source=data.source,
     )
     db.add(transaction)
+
+    if target_account is not None and data.amount:
+        bal = target_account.current_balance or 0
+        if target_account.account_type == AccountType.CREDIT_CARD:
+            if data.transaction_type == TransactionType.DEBIT:
+                target_account.current_balance = bal + data.amount
+            else:
+                target_account.current_balance = bal - data.amount
+        else:
+            if data.transaction_type == TransactionType.CREDIT:
+                target_account.current_balance = bal + data.amount
+            else:
+                target_account.current_balance = bal - data.amount
+
     await db.flush()
     await db.refresh(transaction)
     return TransactionResponse.model_validate(transaction)
