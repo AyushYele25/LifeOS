@@ -216,8 +216,11 @@ class AgentService:
                 results[tool.name] = result
                 calls_made += 1
 
-        # Step 5 — Synthesise response
+        # Step 5 — Synthesise grounded response (with optional Gemini coaching layer)
         response_text = self._synthesise_response(message, results)
+        gemini_text = await self._enhance_with_gemini(message, results, response_text)
+        if gemini_text:
+            response_text = gemini_text
 
         return {
             "conversation_id": conversation_id or str(uuid.uuid4()),
@@ -634,6 +637,47 @@ class AgentService:
             )
 
         return "\n".join(lines)
+
+    async def _enhance_with_gemini(
+        self, message: str, results: Dict[str, Any], deterministic_fallback: str
+    ) -> Optional[str]:
+        """Optional LLM formatting layer grounded strictly in deterministic Python tool outputs."""
+        from app.config import settings
+        if not settings.GEMINI_API_KEY:
+            return None
+        try:
+            import httpx
+            prompt = (
+                "You are LIFEOS Financial Copilot for Indian households. "
+                "Answer the user's question concisely and practically in INR (₹) using ONLY the exact numbers "
+                "present in the verified tool outputs below. Never invent any figure.\n\n"
+                f"User Question: {message}\n\n"
+                f"Verified Tool Data:\n{json.dumps(results, default=str)[:4000]}\n\n"
+                f"Baseline Deterministic Summary:\n{deterministic_fallback}"
+            )
+            url = (
+                f"https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{settings.GEMINI_MODEL}:generateContent?key={settings.GEMINI_API_KEY}"
+            )
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                resp = await client.post(
+                    url,
+                    json={"contents": [{"parts": [{"text": prompt}]}]},
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    text = (
+                        data.get("candidates", [{}])[0]
+                        .get("content", {})
+                        .get("parts", [{}])[0]
+                        .get("text", "")
+                        .strip()
+                    )
+                    if text:
+                        return text
+        except Exception as exc:
+            logger.debug("Gemini enhancement skipped: {}", exc)
+        return None
 
     # ─── Formatters ────────────────────────────────────
 

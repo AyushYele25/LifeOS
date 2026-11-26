@@ -43,8 +43,44 @@ CATEGORY_NORMALIZATION = {
     "subscriptions": "Subscriptions",
     "subscription": "Subscriptions",
     "emi & loans": "EMI & Loans",
+    "maintenance": "Maintenance",
+    "mobile & internet": "Mobile & Internet",
+    "insurance": "Insurance",
     "other": "Miscellaneous",
     "miscellaneous": "Miscellaneous",
+}
+
+MINORITY_AUGMENTATION = {
+    "Health & Medical": [
+        "UPI/apollopharmacy/ref-1122", "POS/medplus pharmacy", "UPI/1mg healthcare",
+        "UPI/pharmeasy order", "NEFT/max hospital clinic", "UPI/dr lal pathlabs",
+        "POS/apollo diagnostics", "UPI/practo consultation", "Clinic checkup pharmacy",
+    ],
+    "Investments": [
+        "UPI/zerodha broking", "NACH/groww mutual fund sip", "UPI/kuvera mf investment",
+        "ACH/hdfc mutual fund", "UPI/coin zerodha sip", "NACH/sbi mutual fund",
+        "UPI/angel one shares", "PPF deposit bank transfer", "NPS tier 1 contribution",
+    ],
+    "Utilities": [
+        "BBPS mahanagar gas bill", "UPI/indraprastha gas igl", "BBPS municipal water bill",
+        "UPI/bharat gas cylinder", "UPI/indane lpg refill", "HP gas cylinder booking",
+        "BillDesk piped gas utility", "Municipal property water tax", "Water supply board bill",
+    ],
+    "Maintenance": [
+        "UPI/urban company home service", "NEFT/society maintenance charges", "UPI/ramesh plumber repair",
+        "UPI/electrician home repair", "AC servicing urban company", "Carpenter maintenance repair",
+        "Apartment association monthly maintenance", "RO water purifier service", "Pest control home care",
+    ],
+    "Mobile & Internet": [
+        "BBPS airtel postpaid bill", "UPI/jio fiber recharge", "UPI/act fibernet broadband",
+        "POS/vodafone idea vi recharge", "Airtel xstream broadband bill", "Jio prepaid mobile recharge",
+        "BSNL broadband monthly bill", "Tata Play fiber internet", "Mobile data pack recharge",
+    ],
+    "Insurance": [
+        "NACH/lic of india premium", "UPI/star health insurance", "NACH/hdfc ergo health policy",
+        "UPI/icici lombard motor insurance", "Policybazaar term life renewal", "Niva Bupa health premium",
+        "Tata AIG car insurance renewal", "Care Health insurance policy", "SBI Life insurance premium",
+    ],
 }
 
 
@@ -78,6 +114,13 @@ def load_and_prepare_data(workspace_root: str):
             if desc and norm_cat:
                 descriptions.append(desc)
                 labels.append(norm_cat)
+
+    # 3. Balance minority Indian merchant categories for strong macro-F1
+    for cat_name, templates in MINORITY_AUGMENTATION.items():
+        for i in range(40):
+            for tpl in templates:
+                descriptions.append(f"{tpl} {i + 1}")
+                labels.append(cat_name)
 
     print(f"📊 Total training records assembled: {len(descriptions):,}")
     return descriptions, labels

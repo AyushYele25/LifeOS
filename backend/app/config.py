@@ -5,7 +5,7 @@ Centralized settings loaded from environment variables with sensible defaults.
 """
 
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 import json
 
 
@@ -42,9 +42,11 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 50
 
-    # ─── ML ───────────────────────────────────────────
+    # ─── ML & Optional LLM ────────────────────────────────
     ML_MODEL_DIR: str = "ml_models"
     CLASSIFICATION_CONFIDENCE_THRESHOLD: float = 0.70
+    GEMINI_API_KEY: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-2.0-flash"
 
     model_config = {
         "env_file": ".env",

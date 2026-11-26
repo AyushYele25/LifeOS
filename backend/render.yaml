@@ -9,7 +9,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.12.0
       - key: DEBUG
-        value: "false"
+        value: "true"
       - key: DATABASE_URL
         value: "sqlite+aiosqlite:///./lifeos.db"
       - key: DATABASE_URL_SYNC
