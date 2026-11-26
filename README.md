@@ -1,5 +1,7 @@
 # LIFEOS — Personal Life Operating System
 
+🌐 **Live App:** **[https://lifeos-4em4.onrender.com/](https://lifeos-4em4.onrender.com/)** *(Click **Demo Login** for a pre-loaded household tour or register a new account)*
+
 > **A stateful AI decision engine for Indian households that continuously models financial and household state, detects subtle anomalies, forecasts upcoming contractual obligations, stress-tests against macroeconomic shocks, and mathematically simulates the real-world consequences of everyday purchasing decisions.**
 
 ---
