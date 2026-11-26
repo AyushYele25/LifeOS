@@ -10,22 +10,24 @@ from typing import Dict, Any
 
 def calculate_new_regime_tax(gross_income: float) -> Dict[str, Any]:
     """
-    New Tax Regime (Section 115BAC - FY 2025-26 / 2026-27):
+    New Tax Regime (Section 115BAC - FY 2025-26 / 2026-27 Budget 2025):
     - Salaried Standard Deduction: ₹75,000
     - Slabs:
-      0 - 3L: 0%
-      3L - 7L: 5%
-      7L - 10L: 10%
-      10L - 12L: 15%
-      12L - 15L: 20%
-      > 15L: 30%
-    - Sec 87A Rebate: Full rebate if taxable income <= ₹7,00,000 (Gross <= ₹7,75,000).
+      0 - 4L: 0%
+      4L - 8L: 5%
+      8L - 12L: 10%
+      12L - 16L: 15%
+      16L - 20L: 20%
+      20L - 24L: 25%
+      > 24L: 30%
+    - Sec 87A Rebate: Full rebate up to ₹12,00,000 taxable income (Gross <= ₹12,75,000),
+      with marginal relief right above ₹12,00,000 so tax increase never exceeds excess income.
     - 4% Health & Education Cess.
     """
     standard_deduction = 75000.0
     taxable_income = max(0.0, gross_income - standard_deduction)
 
-    if taxable_income <= 700000.0:
+    if taxable_income <= 1200000.0:
         return {
             "regime": "New Regime",
             "gross_income": gross_income,
@@ -38,27 +40,23 @@ def calculate_new_regime_tax(gross_income: float) -> Dict[str, Any]:
             "effective_tax_rate": 0.0
         }
 
+    slabs = [
+        (400000.0, 800000.0, 0.05),
+        (800000.0, 1200000.0, 0.10),
+        (1200000.0, 1600000.0, 0.15),
+        (1600000.0, 2000000.0, 0.20),
+        (2000000.0, 2400000.0, 0.25),
+        (2400000.0, float("inf"), 0.30),
+    ]
     base_tax = 0.0
-    # Slab 3L - 7L @ 5%
-    if taxable_income > 300000.0:
-        slab = min(taxable_income, 700000.0) - 300000.0
-        base_tax += slab * 0.05
-    # Slab 7L - 10L @ 10%
-    if taxable_income > 700000.0:
-        slab = min(taxable_income, 1000000.0) - 700000.0
-        base_tax += slab * 0.10
-    # Slab 10L - 12L @ 15%
-    if taxable_income > 1000000.0:
-        slab = min(taxable_income, 1200000.0) - 1000000.0
-        base_tax += slab * 0.15
-    # Slab 12L - 15L @ 20%
-    if taxable_income > 1200000.0:
-        slab = min(taxable_income, 1500000.0) - 1200000.0
-        base_tax += slab * 0.20
-    # Slab > 15L @ 30%
-    if taxable_income > 1500000.0:
-        slab = taxable_income - 1500000.0
-        base_tax += slab * 0.30
+    for low, high, rate in slabs:
+        if taxable_income > low:
+            base_tax += (min(taxable_income, high) - low) * rate
+
+    # Section 87A marginal relief: tax before cess cannot exceed income above ₹12,00,000
+    excess_over_rebate = taxable_income - 1200000.0
+    if base_tax > excess_over_rebate:
+        base_tax = excess_over_rebate
 
     cess = base_tax * 0.04
     total_tax = base_tax + cess

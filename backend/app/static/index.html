@@ -2187,7 +2187,7 @@
               <p class="text-[11px] text-slate-400 mt-1">Cost: <strong>₹${Number(s.billing_amount).toLocaleString('en-IN')}</strong> (${s.frequency}) • Annual Bleed: <strong class="text-rose-400">₹${Number(s.annual_cost).toLocaleString('en-IN')}</strong></p>
               <p class="text-[10px] text-cyan-400 mt-1 font-mono">💡 Cancel guide: ${escapeHTML(s.cancellation_guide)}</p>
             </div>
-            <button onclick="cancelSubscription('${s.id}', '${escapeHTML(s.merchant)}')" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-semibold border border-rose-500/30 whitespace-nowrap transition">
+            <button data-sub-id="${s.id}" data-sub-name="${escapeHTML(s.merchant)}" onclick="cancelSubscription(this.dataset.subId, this.dataset.subName)" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-semibold border border-rose-500/30 whitespace-nowrap transition">
               Cancel Sub
             </button>
           </div>

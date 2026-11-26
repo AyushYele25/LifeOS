@@ -38,7 +38,7 @@ MAX_TOOL_CALLS_PER_QUERY = 5
 INTENT_PATTERNS: List[Tuple[List[str], List[str]]] = [
     # Affordability / purchase
     (
-        ["can i afford", "should i buy", "purchase", "buy now", "emi option"],
+        ["can i afford", "can i buy", "should i buy", "want to buy", "planning to buy", "purchase", "buy now", "emi option"],
         ["simulate_purchase", "get_life_state"],
     ),
     # Risk assessment
@@ -357,7 +357,7 @@ class AgentService:
             flags=re.IGNORECASE,
         )
         cleaned_for_item = re.sub(
-            r'\b(?:can i afford|should i|to buy|buy|afford|purchase|right now|for|worth|costing|at|a|an)\b',
+            r'\b(?:can i afford|can i buy|should i buy|should i|want to buy|planning to buy|to buy|buy|afford|purchase|right now|for|worth|costing|at|i|a|an)\b',
             ' ',
             cleaned_for_item,
             flags=re.IGNORECASE,

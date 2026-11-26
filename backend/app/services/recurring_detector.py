@@ -20,85 +20,53 @@ from app.models import Transaction, RecurringPattern
 from app.models.models import SubscriptionFrequency
 
 
+MERCHANT_ALIASES = [
+    ("netflix", "Netflix"),
+    ("spotify", "Spotify"),
+    ("amazon prime", "Amazon Prime"),
+    ("prime", "Amazon Prime"),
+    ("hotstar", "Disney+ Hotstar"),
+    ("youtube", "YouTube Premium"),
+    ("cult.fit", "Cult.fit"),
+    ("cult fit", "Cult.fit"),
+    ("airtel", "Airtel"),
+    ("jio", "Jio"),
+    ("bescom", "BESCOM Electricity"),
+    ("tata power", "Tata Power"),
+    ("adani", "Adani Electricity"),
+    ("landlord", "House Rent"),
+    ("rent", "House Rent"),
+    ("swiggy", "Swiggy"),
+    ("zomato", "Zomato"),
+    ("blinkit", "Blinkit"),
+    ("zepto", "Zepto"),
+    ("uber", "Uber"),
+    ("ola", "Ola"),
+]
+
+
 def normalize_merchant_name(raw_merchant: Optional[str], description: str) -> str:
     """Extract and normalize canonical merchant name."""
     target = (raw_merchant or description or "").strip()
     lower = target.lower()
 
-    # Brand and category aliases from full string
-    if "netflix" in lower:
-        return "Netflix"
-    if "spotify" in lower:
-        return "Spotify"
-    if "prime" in lower or "amazon prime" in lower:
-        return "Amazon Prime"
-    if "hotstar" in lower:
-        return "Disney+ Hotstar"
-    if "youtube" in lower:
-        return "YouTube Premium"
-    if "cult.fit" in lower or "cult fit" in lower:
-        return "Cult.fit"
-    if "airtel" in lower:
-        return "Airtel"
-    if "jio" in lower:
-        return "Jio"
-    if "bescom" in lower:
-        return "BESCOM Electricity"
-    if "tata power" in lower:
-        return "Tata Power"
-    if "adani" in lower:
-        return "Adani Electricity"
-    if "landlord" in lower or "rent" in lower:
-        return "House Rent"
-    if "swiggy" in lower:
-        return "Swiggy"
-    if "zomato" in lower:
-        return "Zomato"
-    if "blinkit" in lower:
-        return "Blinkit"
-    if "zepto" in lower:
-        return "Zepto"
-    if "uber" in lower:
-        return "Uber"
-    if "ola" in lower:
-        return "Ola"
+    for token, canonical in MERCHANT_ALIASES:
+        if token in lower:
+            return canonical
 
-    # Common prefixes cleanup
-    cleaned = re.sub(r"^(upi/payment to |upi/house rent/|pos/e-com recurring — |pos/|bbps |nach debit — |ach credit — )", "", target, flags=re.IGNORECASE)
+    cleaned = re.sub(
+        r"^(upi/payment to |upi/house rent/|pos/e-com recurring — |pos/|bbps |nach debit — |ach credit — )",
+        "",
+        target,
+        flags=re.IGNORECASE,
+    )
     cleaned = re.sub(r"/ref-\d+", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
-    if "prime" in lower or "amazon prime" in lower:
-        return "Amazon Prime"
-    if "hotstar" in lower:
-        return "Disney+ Hotstar"
-    if "youtube" in lower:
-        return "YouTube Premium"
-    if "cult.fit" in lower or "cult fit" in lower:
-        return "Cult.fit"
-    if "airtel" in lower:
-        return "Airtel"
-    if "jio" in lower:
-        return "Jio"
-    if "bescom" in lower:
-        return "BESCOM Electricity"
-    if "tata power" in lower:
-        return "Tata Power"
-    if "adani" in lower:
-        return "Adani Electricity"
-    if "landlord" in lower or "rent" in lower:
-        return "House Rent"
-    if "swiggy" in lower:
-        return "Swiggy"
-    if "zomato" in lower:
-        return "Zomato"
-    if "blinkit" in lower:
-        return "Blinkit"
-    if "zepto" in lower:
-        return "Zepto"
-    if "uber" in lower:
-        return "Uber"
-    if "ola" in lower:
-        return "Ola"
+
+    cleaned_lower = cleaned.lower()
+    for token, canonical in MERCHANT_ALIASES:
+        if token in cleaned_lower:
+            return canonical
 
     return cleaned.title() if len(cleaned) > 2 else "Unknown Merchant"
 

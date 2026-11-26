@@ -148,11 +148,22 @@ async def compute_debt_payoff_strategies(
     avalanche_order = sorted(loan_list, key=lambda x: x["interest_rate"], reverse=True)
     snowball_order = sorted(loan_list, key=lambda x: x["principal"])
 
-    reduction_factor = (total_monthly_min + extra_monthly) / max(1.0, total_monthly_min)
-    accelerated_months = max(1, int(round(baseline_months / reduction_factor)))
-    accelerated_interest = baseline_interest * (accelerated_months / max(1, baseline_months)) * 0.85
-    interest_saved = max(0.0, baseline_interest - accelerated_interest)
-    months_saved = max(0, baseline_months - accelerated_months)
+    if extra_monthly <= 0.0:
+        accelerated_months = baseline_months
+        accelerated_interest = baseline_interest
+        interest_saved = 0.0
+        months_saved = 0
+        rec = "Add an extra monthly prepayment above your minimum EMIs to cut tenure and interest."
+    else:
+        reduction_factor = (total_monthly_min + extra_monthly) / max(1.0, total_monthly_min)
+        accelerated_months = max(1, int(round(baseline_months / reduction_factor)))
+        accelerated_interest = baseline_interest * (accelerated_months / max(1, baseline_months)) * 0.90
+        interest_saved = max(0.0, baseline_interest - accelerated_interest)
+        months_saved = max(0, baseline_months - accelerated_months)
+        rec = (
+            f"Paying just +₹{extra_monthly:,.0f}/mo extra closes your loans "
+            f"{months_saved} months early and saves ₹{interest_saved:,.0f} in interest!"
+        )
 
     return {
         "has_debt": True,
@@ -167,10 +178,7 @@ async def compute_debt_payoff_strategies(
         "months_saved": months_saved,
         "avalanche_order": [l["name"] for l in avalanche_order],
         "snowball_order": [l["name"] for l in snowball_order],
-        "recommendation": (
-            f"Paying just +₹{extra_monthly:,.0f}/mo extra closes your loans "
-            f"{months_saved} months early and saves ₹{interest_saved:,.0f} in interest!"
-        ),
+        "recommendation": rec,
     }
 
 

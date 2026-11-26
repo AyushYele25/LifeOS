@@ -216,7 +216,11 @@ class ScenarioSimulator:
 
         exp_with_emi = monthly_expenses + monthly_emi
         runway_emi = max(0.0, float(liquid_balance / exp_with_emi)) if exp_with_emi > 0 else 0.0
-        new_dti = float((emi_burden + monthly_emi) / monthly_income) if monthly_income > 0 else 0.0
+        new_dti = (
+            float((emi_burden + monthly_emi) / monthly_income)
+            if monthly_income > 0
+            else (1.0 if monthly_emi > 0 else 0.0)
+        )
 
         if new_dti > 0.50 or runway_emi < 1.0:
             risk_emi = RiskLevel.CRITICAL

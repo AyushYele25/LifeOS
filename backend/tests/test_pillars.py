@@ -264,3 +264,52 @@ async def test_real_user_onboarding_crud_and_vault_isolation(client: AsyncClient
     )
     assert chat_res.status_code == 200
     assert "Actionable Monthly Game Plan" in chat_res.json()["message"]
+
+
+@pytest.mark.asyncio
+async def test_small_bug_regressions(client: AsyncClient, auth_headers: dict, db_session, test_user):
+    """Verify fixes for zero-prepay debt, Budget 2025 marginal relief, everyday ML rules, and purchase intent routing."""
+    from app.ml.classifier import predict_category
+    from app.services.tax_engine import calculate_new_regime_tax
+
+    # 1. Tax Engine FY 2025-26/2026-27 rebate & marginal relief (no cliff)
+    t_zero = calculate_new_regime_tax(1275000.0)
+    assert t_zero["total_tax_payable"] == 0.0
+    t_marginal = calculate_new_regime_tax(1276000.0)
+    assert 0 < t_marginal["total_tax_payable"] <= 1040.0
+
+    # 2. Everyday ML rules & quick ingest cleanup
+    assert predict_category("Tea 20")["predicted_category"] == "Food & Dining"
+    assert predict_category("Paid 450 to Rahul for dinner")["predicted_category"] == "Food & Dining"
+    assert predict_category("Credit card bill paid 12000")["predicted_category"] == "EMI & Loans"
+    assert predict_category("Got 1500 cashback from Amazon Pay")["predicted_category"] == "Cashback"
+    assert predict_category("Spent 35k on MacBook downpayment")["predicted_category"] == "Shopping"
+
+    cb_parse = parse_natural_language_expense("Got 1500 cashback from Amazon Pay")
+    assert cb_parse["transaction_type"] == "credit"
+    assert not cb_parse["description"].lower().startswith("got ")
+
+    # 3. Debt payoff with extra_monthly=0 yields 0 interest saved
+    db_session.add(Loan(
+        user_id=test_user.id,
+        name="Personal Loan",
+        loan_type=LoanType.PERSONAL,
+        principal_amount=Decimal("100000.00"),
+        outstanding_amount=Decimal("100000.00"),
+        interest_rate=14.0,
+        emi_amount=Decimal("5000.00"),
+        total_emis=24,
+        emis_paid=0,
+        status=LoanStatus.ACTIVE,
+    ))
+    await db_session.commit()
+
+    dp_zero = await client.get("/api/pillars/defense/debt-payoff?extra_monthly=0", headers=auth_headers)
+    assert dp_zero.status_code == 200
+    assert dp_zero.json()["interest_saved"] == 0.0
+    assert dp_zero.json()["months_saved"] == 0
+
+    # 4. Agent routes casual purchase phrasing to simulate_purchase
+    ag_buy = await client.post("/api/agent/chat", json={"message": "Can I buy shoes for 2500?"}, headers=auth_headers)
+    assert ag_buy.status_code == 200
+    assert "simulate_purchase" in ag_buy.json()["tools_used"]

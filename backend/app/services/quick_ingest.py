@@ -87,7 +87,7 @@ def parse_natural_language_expense(text: str) -> Dict[str, Any]:
             flags=re.IGNORECASE,
         )
         desc = re.sub(
-            r"\b(spent|paid|debited|credited|for|at|on|via|received|today|yesterday|from|to|your|a/c|acct|account)\b",
+            r"\b(spent|paid|got|debited|credited|for|at|on|via|received|today|yesterday|from|to|your|a/c|acct|account)\b",
             " ",
             desc,
             flags=re.IGNORECASE,
