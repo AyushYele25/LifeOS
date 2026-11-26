@@ -177,3 +177,90 @@ async def test_pillars_api_endpoints(client: AsyncClient, auth_headers: dict, db
     vault_data = vault_res.json()
     assert len(vault_data["members"]) >= 2
     assert "settlements" in vault_data
+
+
+def test_sms_and_spacing_ingest_parsing():
+    """Verify Bank/UPI SMS parsing and clean spacing in quick ingest."""
+    res_voice = parse_natural_language_expense("Spent 450 on Swiggy dinner")
+    assert res_voice["amount"] == 450.0
+    assert "Spenton" not in res_voice["description"]
+    assert res_voice["predicted_category"] == "Food & Dining"
+
+    res_sms = parse_natural_language_expense("Rs.450.00 debited from A/c XX4012 on 26-11-26 to ZOMATO (UPI Ref 6331) Avl Bal: Rs.12,000.00")
+    assert res_sms["amount"] == 450.0
+    assert res_sms["transaction_type"] == "debit"
+    assert "zomato" in res_sms["description"].lower()
+    assert res_sms["predicted_category"] == "Food & Dining"
+
+
+@pytest.mark.asyncio
+async def test_real_user_onboarding_crud_and_vault_isolation(client: AsyncClient, auth_headers: dict):
+    """Verify empty user safe-to-spend honesty, quick-setup, tx delete balance reversal, and per-user vault."""
+    # 1. Empty user should get needs_setup=True instead of fake 1.2L income
+    empty_s2s = await client.get("/api/pillars/safe-to-spend", headers=auth_headers)
+    assert empty_s2s.status_code == 200
+    assert empty_s2s.json()["needs_setup"] is True
+    assert empty_s2s.json()["monthly_income"] == 0.0
+
+    # 2. Quick setup computes real daily allowance from user inputs
+    setup_res = await client.post(
+        "/api/pillars/quick-setup",
+        json={
+            "liquid_balance": 25000.0,
+            "monthly_income": 35000.0,
+            "fixed_monthly_bills": 10000.0,
+            "account_name": "Student SBI",
+        },
+        headers=auth_headers,
+    )
+    assert setup_res.status_code == 200
+    s2s_after = setup_res.json()["safe_to_spend"]
+    assert s2s_after["needs_setup"] is False
+    assert s2s_after["monthly_income"] == 35000.0
+    assert s2s_after["daily_safe_to_spend"] > 0
+
+    # 3. Create & delete transaction reverses account balance
+    acc_before = (await client.get("/api/accounts", headers=auth_headers)).json()[0]
+    tx_res = await client.post(
+        "/api/transactions",
+        json={"date": str(date.today()), "description": "Swiggy order", "amount": 500.0, "transaction_type": "debit"},
+        headers=auth_headers,
+    )
+    assert tx_res.status_code == 201
+    tx_id = tx_res.json()["id"]
+    acc_mid = (await client.get("/api/accounts", headers=auth_headers)).json()[0]
+    assert float(acc_mid["current_balance"]) == float(acc_before["current_balance"]) - 500.0
+
+    del_res = await client.delete(f"/api/transactions/{tx_id}", headers=auth_headers)
+    assert del_res.status_code == 204
+    acc_restored = (await client.get("/api/accounts", headers=auth_headers)).json()[0]
+    assert float(acc_restored["current_balance"]) == float(acc_before["current_balance"])
+
+    # 4. Customize Shared Vault members & add/delete bill privately
+    mem_res = await client.put(
+        "/api/pillars/household/members",
+        json={"vault_name": "Hostel Room 12", "members": ["Arjun", "Vikram"]},
+        headers=auth_headers,
+    )
+    assert mem_res.status_code == 200
+    assert mem_res.json()["vault_name"] == "Hostel Room 12"
+    split_res = await client.post(
+        "/api/pillars/household/split",
+        json={"description": "Wifi Bill", "amount": 1000.0, "paid_by": "Arjun"},
+        headers=auth_headers,
+    )
+    assert split_res.status_code == 200
+    assert split_res.json()["total_shared_spend"] == 1000.0
+    exp_id = split_res.json()["expenses"][0]["id"]
+    del_exp = await client.delete(f"/api/pillars/household/expense/{exp_id}", headers=auth_headers)
+    assert del_exp.status_code == 200
+    assert del_exp.json()["total_shared_spend"] == 0.0
+
+    # 5. Agent chat builds actionable monthly game plan
+    chat_res = await client.post(
+        "/api/agent/chat",
+        json={"message": "How can I save more money and build a monthly budget plan?"},
+        headers=auth_headers,
+    )
+    assert chat_res.status_code == 200
+    assert "Actionable Monthly Game Plan" in chat_res.json()["message"]

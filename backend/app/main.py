@@ -37,10 +37,9 @@ async def lifespan(app: FastAPI):
     """Application startup and shutdown."""
     logger.info("🚀 Starting LIFEOS v{}", settings.APP_VERSION)
 
-    # Initialize database tables (dev only — use Alembic migrations in prod)
-    if settings.DEBUG:
-        await init_db()
-        logger.info("📦 Database tables initialized")
+    # Initialize missing database tables safely (checkfirst=True)
+    await init_db()
+    logger.info("📦 Database tables initialized")
 
     # Seed default categories
     await _seed_default_categories()

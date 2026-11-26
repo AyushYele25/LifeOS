@@ -253,6 +253,47 @@ async def update_transaction(
     return TransactionResponse.model_validate(transaction)
 
 
+@router.delete("/{transaction_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_transaction(
+    transaction_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete a transaction and reverse its balance impact on any linked account."""
+    result = await db.execute(
+        select(Transaction).where(
+            and_(Transaction.id == transaction_id, Transaction.user_id == current_user.id)
+        )
+    )
+    transaction = result.scalar_one_or_none()
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    if transaction.account_id and transaction.amount:
+        acc_res = await db.execute(
+            select(Account).where(
+                and_(Account.id == transaction.account_id, Account.user_id == current_user.id)
+            )
+        )
+        target_account = acc_res.scalar_one_or_none()
+        if target_account is not None:
+            bal = target_account.current_balance or 0
+            if target_account.account_type == AccountType.CREDIT_CARD:
+                if transaction.transaction_type == TransactionType.DEBIT:
+                    target_account.current_balance = bal - transaction.amount
+                else:
+                    target_account.current_balance = bal + transaction.amount
+            else:
+                if transaction.transaction_type == TransactionType.CREDIT:
+                    target_account.current_balance = bal - transaction.amount
+                else:
+                    target_account.current_balance = bal + transaction.amount
+
+    await db.delete(transaction)
+    await db.flush()
+    return None
+
+
 @router.post("/import/preview", response_model=dict)
 async def preview_csv_import(
     file: UploadFile = File(...),

@@ -692,3 +692,30 @@ class AuditLog(Base):
     # Relationship
     user = relationship("User", back_populates="audit_logs")
 
+
+class HouseholdVault(Base):
+    """Per-user household/group shared expense vault settings."""
+    __tablename__ = "household_vaults"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    vault_name = Column(String(255), default="My Shared Split Vault", nullable=False)
+    members = Column(JSONB, nullable=False, default=list)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
+
+
+class VaultExpense(Base):
+    """Per-user shared expenses tracked inside a household/roommate vault."""
+    __tablename__ = "vault_expenses"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    description = Column(String(500), nullable=False)
+    amount = Column(Numeric(14, 2), nullable=False)
+    paid_by = Column(String(255), nullable=False)
+    category = Column(String(100), default="Shared Expense", nullable=False)
+    expense_date = Column(Date, default=date.today, nullable=False)
+    is_settled = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=utc_now)
+

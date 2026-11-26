@@ -280,7 +280,41 @@
     <!-- TAB 1: EXECUTIVE DASHBOARD (WITH PILLAR 2 SAFE-TO-SPEND) -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section id="tab-dashboard" class="tab-content space-y-6">
-      
+
+      <!-- ⚡ 30-SECOND REAL-LIFE QUICK SETUP (SHOWN FOR NEW USERS OR ON DEMAND) -->
+      <div id="quick-setup-card" class="hidden glass-card rounded-3xl p-6 border border-cyan-500/40 glow-cyan">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold uppercase tracking-wider">⚡ 30-Second Setup</span>
+            <h3 class="text-lg font-extrabold text-white mt-1.5">Set Up Your Real Numbers in One Step</h3>
+            <p class="text-xs text-slate-400">Enter your real cash balance, monthly income, and fixed rent/bills to unlock live daily limits and analysis.</p>
+          </div>
+          <button onclick="document.getElementById('quick-setup-card').classList.add('hidden')" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-slate-800/70">Dismiss</button>
+        </div>
+        <form onsubmit="handleQuickSetup(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Current Cash / Bank Balance (₹)</label>
+            <input type="number" id="setup-balance" required min="0" step="100" placeholder="e.g. 25000"
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white mono focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Monthly Income / Allowance (₹)</label>
+            <input type="number" id="setup-income" required min="0" step="100" placeholder="e.g. 35000"
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white mono focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Monthly Fixed Rent / Bills (₹)</label>
+            <input type="number" id="setup-bills" min="0" step="100" value="0" placeholder="e.g. 10000"
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white mono focus:outline-none focus:border-cyan-500">
+          </div>
+          <div class="flex items-end">
+            <button type="submit" id="quick-setup-btn" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 hover:opacity-95 text-slate-950 font-extrabold text-xs transition shadow-lg shadow-cyan-500/20">
+              Activate Live Dashboard
+            </button>
+          </div>
+        </form>
+      </div>
+
       <!-- 🟢 PILLAR 2 HERO: DAILY SAFE-TO-SPEND ALLOWANCE METER -->
       <div class="glass-card rounded-3xl p-6 border border-emerald-500/30 glow-emerald relative overflow-hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -299,7 +333,11 @@
             </div>
           </div>
 
-          <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+          <div class="flex items-center space-x-2.5 w-full md:w-auto justify-end">
+            <button onclick="document.getElementById('quick-setup-card').classList.toggle('hidden')" class="px-3.5 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 font-bold text-xs flex items-center space-x-1.5 transition">
+              <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+              <span>Quick Setup</span>
+            </button>
             <button onclick="switchTab('transactions'); document.getElementById('voice-input').focus();" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:opacity-95 text-slate-950 font-extrabold text-xs flex items-center space-x-1.5 transition shadow-lg shadow-emerald-500/20">
               <i data-lucide="mic" class="w-3.5 h-3.5"></i>
               <span>Quick Voice / Log</span>
@@ -522,16 +560,20 @@
             <i data-lucide="mic" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Zero-Effort Voice & Text Ingestion (Pillar 1)</h3>
-            <p class="text-[11px] text-slate-400">Speak or paste natural text like "Spent 450 at CCD on coffee" — parses and logs automatically</p>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Voice, Bank SMS & Text Ingestion</h3>
+            <p class="text-[11px] text-slate-400">Speak via mic, type naturally, or paste a bank/UPI SMS alert — auto-categorizes & logs immediately</p>
           </div>
         </div>
 
         <!-- Conversational Ingestion Input -->
         <form onsubmit="handleNaturalLanguageIngest(event)" class="flex flex-col sm:flex-row gap-2.5 mb-3">
-          <div class="relative flex-1">
-            <input type="text" id="voice-input" placeholder="e.g. Swiggy dinner 650 via HDFC card, Petrol 2200 BPCL diesel, Salary 120000 credited" 
+          <div class="relative flex-1 flex items-center gap-2">
+            <input type="text" id="voice-input" placeholder="Speak, paste Bank/UPI SMS (Rs.450 debited to ZOMATO), or type: Swiggy dinner 650" 
               class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            <button type="button" id="mic-record-btn" onclick="toggleVoiceDictation()" title="Speak expense into microphone" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-400 font-bold text-xs flex items-center space-x-1.5 flex-shrink-0 transition">
+              <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+              <span id="mic-btn-label">Speak</span>
+            </button>
           </div>
           <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-extrabold text-xs flex items-center justify-center space-x-1.5 transition shadow">
             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
@@ -542,18 +584,18 @@
         <!-- Simulated Voice Chips & Receipt Scanner Trigger -->
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-2 border-t border-slate-800/80">
           <div class="flex items-center space-x-1.5 overflow-x-auto custom-scroll">
-            <span class="text-[11px] text-slate-400 font-semibold uppercase">Voice Presets:</span>
-            <button type="button" onclick="setVoiceInput('Swiggy gourmet dinner 850 rupees via HDFC')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
+            <span class="text-[11px] text-slate-400 font-semibold uppercase">Try Examples:</span>
+            <button type="button" onclick="setVoiceInput('Rs.450.00 debited from A/c XX4012 on 26-11-26 to ZOMATO (UPI Ref 633189)')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-cyan-300">
+              📱 Bank SMS
+            </button>
+            <button type="button" onclick="setVoiceInput('Swiggy dinner 850 rupees')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
               🎙️ Swiggy ₹850
             </button>
-            <button type="button" onclick="setVoiceInput('Petrol 2400 diesel at BPCL pump')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
-              🎙️ BPCL Fuel ₹2.4k
+            <button type="button" onclick="setVoiceInput('Petrol 2400 at BPCL pump')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
+              🎙️ Fuel ₹2.4k
             </button>
-            <button type="button" onclick="setVoiceInput('Star Health annual insurance premium 15000 renewal')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300">
-              🎙️ Star Health ₹15k
-            </button>
-            <button type="button" onclick="setVoiceInput('Infosys monthly salary 120000 credited')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-emerald-400 font-semibold">
-              🎙️ Salary ₹1.20L
+            <button type="button" onclick="setVoiceInput('Monthly salary 45000 credited')" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-emerald-400 font-semibold">
+              🎙️ Salary ₹45k
             </button>
           </div>
 
@@ -855,12 +897,18 @@
       <div class="glass-card rounded-3xl p-6 border border-slate-800">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
           <div>
-            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Zombie Subscription Hunter</h3>
-            <p class="text-xs text-slate-400">Recurring charges detected in your accounts with cancellation step-by-step guides</p>
+            <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Subscription Tracker & Zombie Hunter</h3>
+            <p class="text-xs text-slate-400">Track OTT, gym, cloud, or SIP recurring charges and cancel unused drains</p>
           </div>
-          <div class="text-right">
-            <div class="text-xs text-slate-400">Annual Subscriptions Bleed:</div>
-            <div id="zombie-annual-bleed" class="text-lg font-bold text-rose-400 mono">₹14,988.00/yr</div>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <div class="text-[11px] text-slate-400">Annual Bleed:</div>
+              <div id="zombie-annual-bleed" class="text-base font-bold text-rose-400 mono">₹0.00/yr</div>
+            </div>
+            <button onclick="openNewSubModal()" class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center space-x-1 transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Add Subscription</span>
+            </button>
           </div>
         </div>
 
@@ -871,14 +919,20 @@
 
       <!-- 2. DEBT PAYOFF ENGINE (SNOWBALL VS AVALANCHE) -->
       <div class="glass-card rounded-3xl p-6 border border-slate-800">
-        <div class="flex justify-between items-start mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
           <div>
             <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Debt Snowball vs Avalanche Accelerator</h3>
-            <p class="text-xs text-slate-400">Simulate how paying a small extra monthly sum cuts off years of interest</p>
+            <p class="text-xs text-slate-400">Add your real loans/EMIs and simulate how extra payments save years of interest</p>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25">
-            Smart Payoff
-          </span>
+          <div class="flex items-center space-x-2">
+            <button onclick="openNewLoanModal()" class="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-bold flex items-center space-x-1 transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Add Loan / EMI</span>
+            </button>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/25">
+              Smart Payoff
+            </span>
+          </div>
         </div>
 
         <!-- Prepayment Slider -->
@@ -1000,37 +1054,45 @@
     <section id="tab-vault" class="tab-content hidden space-y-6">
       
       <div class="glass-card rounded-3xl p-6 border border-teal-500/30 glow-cyan">
-        <div class="flex items-center space-x-2.5 mb-2">
-          <span class="px-2.5 py-0.5 rounded-full bg-teal-500/15 text-teal-400 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
-            <i data-lucide="users" class="w-3.5 h-3.5 mr-1 text-teal-400"></i>
-            Pillar 6 • Shared Vault
-          </span>
-          <span class="text-xs text-slate-400 font-medium">Household & Flatmate Shared Brain</span>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <div class="flex items-center space-x-2.5 mb-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-teal-500/15 text-teal-400 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center">
+                <i data-lucide="users" class="w-3.5 h-3.5 mr-1 text-teal-400"></i>
+                Pillar 6 • Shared Vault
+              </span>
+              <span class="text-xs text-slate-400 font-medium">Private Group Expense Splitter</span>
+            </div>
+            <h2 id="vault-title" class="text-2xl font-extrabold text-white tracking-tight">My Shared Split Vault</h2>
+            <p class="text-xs text-slate-400 mt-1">Split rent, bills, trips, or flatmate expenses and compute instant UPI settlements</p>
+          </div>
+          <button onclick="openVaultMembersModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 text-xs font-bold flex items-center space-x-1.5 transition">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            <span>Edit Group & Members</span>
+          </button>
         </div>
-        <h2 class="text-2xl font-extrabold text-white tracking-tight">Koregaon Park Flat 402 Shared Vault</h2>
-        <p class="text-xs text-slate-400 mt-1">Split rent, cook salaries, and electricity bills automatically with real-time Splitwise-style UPI settlements</p>
       </div>
 
       <!-- SHARED STATS & SETTLEMENTS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div class="glass-card rounded-2xl p-5">
           <span class="text-xs text-slate-400 uppercase font-semibold">Total Shared Month Spend</span>
-          <div id="vault-total" class="text-2xl font-extrabold text-white mono mt-2">₹21,149.00</div>
-          <div class="text-[11px] text-teal-400 mt-1 font-medium">Split equally across 3 members</div>
+          <div id="vault-total" class="text-2xl font-extrabold text-white mono mt-2">₹0.00</div>
+          <div id="vault-members-text" class="text-[11px] text-teal-400 mt-1 font-medium">Split equally across members</div>
         </div>
         <div class="glass-card rounded-2xl p-5">
           <span class="text-xs text-slate-400 uppercase font-semibold">Per Person Share</span>
-          <div id="vault-share" class="text-2xl font-extrabold text-cyan-400 mono mt-2">₹7,049.67</div>
-          <div class="text-[11px] text-slate-400 mt-1">Individual monthly liability</div>
+          <div id="vault-share" class="text-2xl font-extrabold text-cyan-400 mono mt-2">₹0.00</div>
+          <div class="text-[11px] text-slate-400 mt-1">Individual liability</div>
         </div>
         <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
           <div>
             <span class="text-xs text-slate-400 uppercase font-semibold">Add Shared Expense</span>
-            <div class="text-xs text-slate-300 mt-1 font-medium">Log maid, wifi, or groceries</div>
+            <div class="text-xs text-slate-300 mt-1 font-medium">Log rent, wifi, or dinner split</div>
           </div>
           <button onclick="openAddSharedExpenseModal()" class="px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center space-x-1">
             <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>+ Add Bill</span>
+            <span>Add Bill</span>
           </button>
         </div>
       </div>
@@ -1083,6 +1145,9 @@
         </div>
 
         <div class="p-3 bg-slate-950/70 border-t border-slate-800/80 flex items-center space-x-2 overflow-x-auto text-[11px] custom-scroll">
+          <button onclick="sendQuickPrompt('How can I save more money and build a monthly budget plan?')" class="px-3 py-1 rounded-full bg-violet-950/80 hover:bg-violet-900 text-violet-200 border border-violet-700/80 flex-shrink-0 transition font-semibold">
+            🎯 Build monthly savings plan
+          </button>
           <button onclick="sendQuickPrompt('Can I afford to buy a 2 lakh rupee laptop right now?')" class="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex-shrink-0 transition font-medium">
             💻 Afford ₹2L laptop?
           </button>
@@ -1190,11 +1255,20 @@
           </div>
         </div>
         <div class="glass-card rounded-3xl overflow-hidden border border-slate-800">
-          <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+          <div class="p-4 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2">
             <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Scheduled Payment Calendar</h4>
-            <button onclick="fetchEvents()" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-            </button>
+            <div class="flex items-center space-x-2">
+              <button onclick="openNewEventModal()" class="px-3 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[11px] font-bold flex items-center space-x-1">
+                <i data-lucide="plus" class="w-3 h-3"></i>
+                <span>Add Bill / Reminder</span>
+              </button>
+              <button onclick="syncEvents()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-semibold">
+                Sync Loans & Subs
+              </button>
+              <button onclick="fetchEvents()" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
           <div id="events-list-container" class="divide-y divide-slate-800/60 text-xs">
             <div class="p-6 text-center text-slate-500">Loading scheduled obligations...</div>
@@ -1295,6 +1369,171 @@
         </div>
         <button type="submit" class="w-full py-2.5 rounded-xl bg-teal-500 text-slate-950 font-bold text-xs">
           Split Expense & Recompute Balances
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT VAULT GROUP & MEMBERS -->
+  <div id="vault-members-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="document.getElementById('vault-members-modal').classList.add('hidden')" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-white">Customize Shared Vault Group</h3>
+        <p class="text-xs text-slate-400 mt-1">Name your group and list members (comma-separated)</p>
+      </div>
+      <form onsubmit="handleUpdateVaultMembers(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Vault / Group Name</label>
+          <input type="text" id="vault-name-input" required placeholder="e.g. Goa Trip / Flat 302"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Members (comma-separated, min 2)</label>
+          <input type="text" id="vault-members-input" required placeholder="e.g. Ayush, Rahul, Sneha"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-teal-500 text-slate-950 font-bold text-xs">
+          Save Group Members
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD SUBSCRIPTION -->
+  <div id="sub-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeNewSubModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-white">Add Recurring Subscription</h3>
+        <p class="text-xs text-slate-400 mt-1">Track OTT, gym, cloud, SaaS, or recurring bills</p>
+      </div>
+      <form onsubmit="handleCreateSubscription(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Subscription Name</label>
+          <input type="text" id="sub-name" required placeholder="e.g. Spotify Duo, JioFiber, Cult.fit"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Amount (₹)</label>
+            <input type="number" id="sub-amount" required min="1" step="1" placeholder="499"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Frequency</label>
+            <select id="sub-freq" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white">
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-500 text-white font-bold text-xs">
+          Save Subscription
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD LOAN / EMI -->
+  <div id="loan-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeNewLoanModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-white">Add Active Loan / EMI</h3>
+        <p class="text-xs text-slate-400 mt-1">Used for Debt Avalanche/Snowball payoff & Safe-to-Spend math</p>
+      </div>
+      <form onsubmit="handleCreateLoan(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Loan Name</label>
+          <input type="text" id="loan-name" required placeholder="e.g. Education Loan, Bike EMI"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Type</label>
+            <select id="loan-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white">
+              <option value="personal">Personal Loan</option>
+              <option value="education">Education Loan</option>
+              <option value="vehicle">Vehicle / Bike EMI</option>
+              <option value="home">Home Loan</option>
+              <option value="credit_card">Credit Card EMI</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Interest Rate (% p.a.)</label>
+            <input type="number" id="loan-rate" required min="0" step="0.1" value="10.5"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Outstanding Balance (₹)</label>
+            <input type="number" id="loan-outstanding" required min="1" step="100" placeholder="150000"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Monthly EMI (₹)</label>
+            <input type="number" id="loan-emi" required min="1" step="100" placeholder="6500"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs">
+          Save Loan & Recompute Payoff
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD BILL / UPCOMING REMINDER -->
+  <div id="event-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative">
+      <button onclick="closeNewEventModal()" class="absolute right-5 top-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-white">Add Upcoming Bill / Reminder</h3>
+        <p class="text-xs text-slate-400 mt-1">Appears in "What Am I Forgetting?" & 30/60/90-day horizon</p>
+      </div>
+      <form onsubmit="handleCreateEvent(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Title</label>
+          <input type="text" id="ev-title" required placeholder="e.g. House Rent, College Fee, Credit Card Bill"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Amount (₹)</label>
+            <input type="number" id="ev-amount" required min="1" step="1" placeholder="12000"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white mono">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Due Date</label>
+            <input type="date" id="ev-date" required
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white mono">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Type</label>
+          <select id="ev-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white">
+            <option value="bill_due">Bill / Rent Due</option>
+            <option value="loan_emi">Loan EMI</option>
+            <option value="subscription_payment">Subscription Renewal</option>
+            <option value="insurance_renewal">Insurance Renewal</option>
+            <option value="tax_deadline">Tax Deadline</option>
+            <option value="custom">Custom Reminder</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs">
+          Add to Upcoming Horizon
         </button>
       </form>
     </div>
@@ -1714,7 +1953,7 @@
       }
     }
 
-    // ─── PILLAR 2: SAFE-TO-SPEND ENGINE ──────────────────────────
+    // ─── PILLAR 2: SAFE-TO-SPEND ENGINE & QUICK SETUP ────────────
     async function fetchSafeToSpend() {
       if (!token) return;
       try {
@@ -1729,17 +1968,99 @@
         document.getElementById('s2s-pool').innerText = '₹' + Number(data.discretionary_pool_total).toLocaleString('en-IN');
         const bdEl = document.getElementById('s2s-breakdown');
         if (bdEl) {
-          bdEl.innerText = `(Income ₹${Number(data.monthly_income).toLocaleString('en-IN')} - Fixed ₹${Number(data.fixed_obligations_total).toLocaleString('en-IN')} - Goal ₹${Number(data.monthly_goal_savings).toLocaleString('en-IN')})`;
+          bdEl.innerText = data.needs_setup
+            ? 'Complete the 30-second Quick Setup above to compute your real pool'
+            : `(Income ₹${Number(data.monthly_income).toLocaleString('en-IN')} - Fixed ₹${Number(data.fixed_obligations_total).toLocaleString('en-IN')} - Goal ₹${Number(data.monthly_goal_savings).toLocaleString('en-IN')})`;
         }
         document.getElementById('s2s-spent-mtd').innerText = '₹' + Number(data.mtd_discretionary_spend).toLocaleString('en-IN');
         document.getElementById('s2s-days-left').innerText = `${data.days_remaining} days left in month`;
         document.getElementById('s2s-advice').innerText = data.advice;
+
+        const setupCard = document.getElementById('quick-setup-card');
+        if (setupCard) {
+          if (data.needs_setup) setupCard.classList.remove('hidden');
+          else setupCard.classList.add('hidden');
+        }
       } catch (e) {}
     }
 
-    // ─── PILLAR 1: NATURAL LANGUAGE & RECEIPT INGESTION ──────────
+    async function handleQuickSetup(e) {
+      e.preventDefault();
+      if (!token) { openAuthModal(); return; }
+      const liquid_balance = parseFloat(document.getElementById('setup-balance').value) || 0;
+      const monthly_income = parseFloat(document.getElementById('setup-income').value) || 0;
+      const fixed_monthly_bills = parseFloat(document.getElementById('setup-bills').value) || 0;
+
+      const btn = document.getElementById('quick-setup-btn');
+      if (btn) { btn.disabled = true; btn.innerText = 'Activating...'; }
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/quick-setup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            liquid_balance,
+            monthly_income,
+            fixed_monthly_bills,
+            account_name: 'Primary Bank Account'
+          })
+        });
+        if (!res.ok) throw new Error('Quick setup failed');
+        document.getElementById('quick-setup-card').classList.add('hidden');
+        confetti({ particleCount: 40, spread: 60 });
+        showToast('Your real financial dashboard is live!', 'success');
+        await loadDashboardData();
+        await fetchSafeToSpend();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerText = 'Activate Live Dashboard'; }
+      }
+    }
+
+    // ─── PILLAR 1: NATURAL LANGUAGE, MIC & RECEIPT INGESTION ─────
+    let voiceRec = null;
     function setVoiceInput(text) {
       document.getElementById('voice-input').value = text;
+    }
+
+    function toggleVoiceDictation() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('Browser mic speech not supported here — type or paste Bank SMS directly!', 'info');
+        return;
+      }
+      const btn = document.getElementById('mic-record-btn');
+      const label = document.getElementById('mic-btn-label');
+      if (voiceRec) {
+        voiceRec.stop();
+        voiceRec = null;
+        btn.classList.remove('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+        label.innerText = 'Speak';
+        return;
+      }
+      voiceRec = new SpeechRec();
+      voiceRec.lang = 'en-IN';
+      voiceRec.interimResults = false;
+      btn.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+      label.innerText = 'Listening...';
+
+      voiceRec.onresult = (ev) => {
+        const transcript = ev.results[0][0].transcript;
+        document.getElementById('voice-input').value = transcript;
+        showToast(`Heard: "${transcript}"`, 'info');
+      };
+      voiceRec.onerror = () => {
+        showToast('Could not capture voice. Try typing or pasting SMS.', 'error');
+      };
+      voiceRec.onend = () => {
+        voiceRec = null;
+        btn.classList.remove('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+        label.innerText = 'Speak';
+      };
+      voiceRec.start();
     }
 
     async function handleNaturalLanguageIngest(e) {
@@ -1866,12 +2187,97 @@
               <p class="text-[11px] text-slate-400 mt-1">Cost: <strong>₹${Number(s.billing_amount).toLocaleString('en-IN')}</strong> (${s.frequency}) • Annual Bleed: <strong class="text-rose-400">₹${Number(s.annual_cost).toLocaleString('en-IN')}</strong></p>
               <p class="text-[10px] text-cyan-400 mt-1 font-mono">💡 Cancel guide: ${escapeHTML(s.cancellation_guide)}</p>
             </div>
-            <button onclick="showToast('Opened cancellation instructions for ${escapeHTML(s.merchant)}', 'info')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 whitespace-nowrap">
+            <button onclick="cancelSubscription('${s.id}', '${escapeHTML(s.merchant)}')" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-semibold border border-rose-500/30 whitespace-nowrap transition">
               Cancel Sub
             </button>
           </div>
         `).join('');
       } catch (e) {}
+    }
+
+    function openNewSubModal() { document.getElementById('sub-modal').classList.remove('hidden'); }
+    function closeNewSubModal() { document.getElementById('sub-modal').classList.add('hidden'); }
+
+    async function handleCreateSubscription(e) {
+      e.preventDefault();
+      if (!token) { openAuthModal(); return; }
+      const name = document.getElementById('sub-name').value.trim();
+      const amount = parseFloat(document.getElementById('sub-amount').value);
+      const frequency = document.getElementById('sub-freq').value;
+      const nextDate = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0];
+
+      try {
+        const res = await fetch(`${API_BASE}/api/subscriptions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ name, provider: name, amount, frequency, next_billing_date: nextDate, category: 'Subscriptions' })
+        });
+        if (!res.ok) throw new Error('Failed to add subscription');
+        closeNewSubModal();
+        showToast(`Added subscription: ${name}`, 'success');
+        await fetchZombieSubscriptions();
+        await fetchSafeToSpend();
+        await recomputeLifeState();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function cancelSubscription(subId, name) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/subscriptions/${subId}/cancel`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to cancel subscription');
+        showToast(`Cancelled ${name}! Savings unlocked.`, 'success');
+        await fetchZombieSubscriptions();
+        await fetchSafeToSpend();
+        await recomputeLifeState();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openNewLoanModal() { document.getElementById('loan-modal').classList.remove('hidden'); }
+    function closeNewLoanModal() { document.getElementById('loan-modal').classList.add('hidden'); }
+
+    async function handleCreateLoan(e) {
+      e.preventDefault();
+      if (!token) { openAuthModal(); return; }
+      const name = document.getElementById('loan-name').value.trim();
+      const loan_type = document.getElementById('loan-type').value;
+      const interest_rate = parseFloat(document.getElementById('loan-rate').value) || 0;
+      const outstanding_amount = parseFloat(document.getElementById('loan-outstanding').value);
+      const emi_amount = parseFloat(document.getElementById('loan-emi').value);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/loans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            name,
+            loan_type,
+            principal_amount: outstanding_amount,
+            outstanding_amount,
+            interest_rate,
+            emi_amount,
+            emi_day: 5,
+            total_emis: Math.max(1, Math.ceil(outstanding_amount / Math.max(1, emi_amount))),
+            emis_paid: 0
+          })
+        });
+        if (!res.ok) throw new Error('Failed to save loan');
+        closeNewLoanModal();
+        showToast(`Added loan: ${name}`, 'success');
+        const extra = parseFloat(document.getElementById('prepay-slider').value) || 2500;
+        await fetchDebtPayoff(extra);
+        await fetchSafeToSpend();
+        await recomputeLifeState();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
     function handleDebtPrepaySlider(val) {
@@ -2015,6 +2421,8 @@
     }
 
     // ─── PILLAR 6: HOUSEHOLD SHARED VAULT ────────────────────────
+    let currentVaultData = null;
+
     async function fetchHouseholdVault() {
       if (!token) return;
       try {
@@ -2023,43 +2431,113 @@
         });
         if (!res.ok) return;
         const d = await res.json();
+        currentVaultData = d;
+
+        const titleEl = document.getElementById('vault-title');
+        if (titleEl && d.vault_name) titleEl.innerText = d.vault_name;
+        const memEl = document.getElementById('vault-members-text');
+        if (memEl && d.members) memEl.innerText = `Split across ${d.members.length} members: ${d.members.join(', ')}`;
 
         document.getElementById('vault-total').innerText = '₹' + Number(d.total_shared_spend).toLocaleString('en-IN', { minimumFractionDigits: 2 });
         document.getElementById('vault-share').innerText = '₹' + Number(d.per_person_share).toLocaleString('en-IN', { minimumFractionDigits: 2 });
 
+        // Populate Paid By dropdown from real group members
+        const paidSelect = document.getElementById('shared-paid-by');
+        if (paidSelect && d.members && d.members.length) {
+          paidSelect.innerHTML = d.members.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('');
+        }
+
         // Settlements list
         const setCont = document.getElementById('vault-settlements-list');
         if (!d.settlements.length) {
-          setCont.innerHTML = '<div class="text-xs text-emerald-400 font-semibold py-2">All flatmate accounts are fully balanced!</div>';
+          setCont.innerHTML = '<div class="text-xs text-emerald-400 font-semibold py-2">All member balances are settled! Add a shared bill to split it.</div>';
         } else {
           setCont.innerHTML = d.settlements.map(s => `
             <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
               <div class="flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                <span class="font-bold text-white">${s.summary}</span>
+                <span class="font-bold text-white">${escapeHTML(s.summary)}</span>
               </div>
-              <button onclick="showToast('Initiating UPI settlement for ₹${s.amount}...', 'success')" class="px-3 py-1 rounded-lg bg-teal-500/15 text-teal-300 font-bold border border-teal-500/30 hover:bg-teal-500/25">
-                Pay via UPI
+              <button onclick="showToast('Recorded UPI settlement reminder for ₹${s.amount}', 'success')" class="px-3 py-1 rounded-lg bg-teal-500/15 text-teal-300 font-bold border border-teal-500/30 hover:bg-teal-500/25">
+                Settle ₹${s.amount}
               </button>
             </div>
           `).join('');
         }
 
         // Expenses list
+        const memberCount = Math.max(1, (d.members || []).length);
         const expCont = document.getElementById('vault-expenses-list');
-        expCont.innerHTML = d.expenses.map(e => `
-          <div class="p-4 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-white text-xs">${escapeHTML(e.description)}</div>
-              <div class="text-[10px] text-slate-400">Paid by <strong class="text-cyan-400">${e.paid_by}</strong> on ${e.date} • ${e.category}</div>
+        if (!d.expenses.length) {
+          expCont.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs">No shared bills yet. Click "Edit Group & Members" to name your group and "Add Bill" to start splitting!</div>';
+        } else {
+          expCont.innerHTML = d.expenses.map(e => `
+            <div class="p-4 flex justify-between items-center">
+              <div>
+                <div class="font-bold text-white text-xs">${escapeHTML(e.description)}</div>
+                <div class="text-[10px] text-slate-400">Paid by <strong class="text-cyan-400">${escapeHTML(e.paid_by)}</strong> on ${e.date} • ${escapeHTML(e.category)}</div>
+              </div>
+              <div class="flex items-center space-x-3">
+                <div class="text-right">
+                  <div class="text-xs font-bold text-white mono">₹${Number(e.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                  <span class="text-[10px] text-slate-500">₹${Number(e.amount / memberCount).toFixed(0)}/person</span>
+                </div>
+                <button onclick="deleteSharedExpense('${e.id}')" title="Remove bill" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </div>
-            <div class="text-right">
-              <div class="text-xs font-bold text-white mono">₹${Number(e.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-              <span class="text-[10px] text-slate-500">₹${Number(e.amount / 3).toFixed(0)}/person</span>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+          lucide.createIcons();
+        }
       } catch (e) {}
+    }
+
+    function openVaultMembersModal() {
+      if (currentVaultData) {
+        document.getElementById('vault-name-input').value = currentVaultData.vault_name || '';
+        document.getElementById('vault-members-input').value = (currentVaultData.members || []).join(', ');
+      }
+      document.getElementById('vault-members-modal').classList.remove('hidden');
+    }
+
+    async function handleUpdateVaultMembers(e) {
+      e.preventDefault();
+      if (!token) return;
+      const vault_name = document.getElementById('vault-name-input').value.trim();
+      const members = document.getElementById('vault-members-input').value.split(',').map(m => m.trim()).filter(Boolean);
+      if (members.length < 2) {
+        showToast('Enter at least 2 comma-separated member names', 'error');
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/household/members`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ vault_name, members })
+        });
+        if (!res.ok) throw new Error('Failed to update vault members');
+        document.getElementById('vault-members-modal').classList.add('hidden');
+        showToast('Group members updated!', 'success');
+        await fetchHouseholdVault();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteSharedExpense(expId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/pillars/household/expense/${expId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to delete shared expense');
+        showToast('Shared bill removed', 'info');
+        await fetchHouseholdVault();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
     function openAddSharedExpenseModal() { document.getElementById('shared-modal').classList.remove('hidden'); }
@@ -2400,11 +2878,31 @@
             </td>
             <td class="py-3.5 px-5 text-right font-mono whitespace-nowrap ${amtColor}">${sign}₹${Number(t.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
             <td class="py-3.5 px-5 text-center">
-              <span class="inline-block w-2.5 h-2.5 rounded-full ${isCredit ? 'bg-emerald-500' : 'bg-slate-600'}"></span>
+              <button onclick="deleteTransaction('${t.id}')" title="Delete transaction" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition inline-flex items-center justify-center">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
             </td>
           </tr>
         `;
       }).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    async function deleteTransaction(txnId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/transactions/${txnId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to delete transaction');
+        showToast('Transaction deleted & balance updated', 'info');
+        await fetchTransactions();
+        await recomputeLifeState();
+        await fetchSafeToSpend();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
     function filterLedger(query) {
@@ -2783,10 +3281,10 @@
           const list = document.getElementById('events-list-container');
           const timeline = h.timeline || [];
           if (!timeline.length) {
-            list.innerHTML = '<div class="p-6 text-center text-slate-500">No upcoming contractual obligations in the next 90 days.</div>';
+            list.innerHTML = '<div class="p-6 text-center text-slate-500">No upcoming obligations in the next 90 days. Click "Add Bill / Reminder" above to track rent or EMIs!</div>';
           } else {
             list.innerHTML = timeline.map(ev => `
-              <div class="p-4 flex items-center justify-between hover:bg-slate-800/30 transition">
+              <div class="p-4 flex items-center justify-between hover:bg-slate-800/30 transition gap-3">
                 <div class="flex items-center space-x-3">
                   <div class="p-2 rounded-xl bg-slate-800 text-cyan-400 border border-slate-700/80">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
@@ -2796,9 +3294,15 @@
                     <div class="text-[10px] text-slate-400">Due: ${ev.event_date} • Type: ${ev.event_type}</div>
                   </div>
                 </div>
-                <div class="text-right">
-                  <div class="text-xs font-bold text-white mono">₹${Number(ev.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
-                  <span class="text-[10px] text-amber-400 font-bold uppercase">${ev.status}</span>
+                <div class="flex items-center space-x-3">
+                  <div class="text-right">
+                    <div class="text-xs font-bold text-white mono">₹${Number(ev.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                    <span class="text-[10px] text-amber-400 font-bold uppercase">${ev.status}</span>
+                  </div>
+                  ${ev.id && ev.status !== 'completed' ? `
+                    <button onclick="completeEvent('${ev.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold whitespace-nowrap">
+                      Mark Paid
+                    </button>` : ''}
                 </div>
               </div>
             `).join('');
@@ -2808,7 +3312,75 @@
       } catch (e) {}
     }
 
+    function openNewEventModal() {
+      const dateInput = document.getElementById('ev-date');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+      }
+      document.getElementById('event-modal').classList.remove('hidden');
+    }
+    function closeNewEventModal() { document.getElementById('event-modal').classList.add('hidden'); }
+
+    async function handleCreateEvent(e) {
+      e.preventDefault();
+      if (!token) { openAuthModal(); return; }
+      const title = document.getElementById('ev-title').value.trim();
+      const amount = parseFloat(document.getElementById('ev-amount').value);
+      const event_date = document.getElementById('ev-date').value;
+      const event_type = document.getElementById('ev-type').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/events`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ title, amount, event_date, event_type, is_recurring: event_type === 'bill_due' || event_type === 'loan_emi' })
+        });
+        if (!res.ok) throw new Error('Failed to create reminder');
+        closeNewEventModal();
+        showToast(`Added reminder: ${title}`, 'success');
+        await fetchEvents();
+        await loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function completeEvent(eventId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/events/${eventId}/complete`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to complete event');
+        showToast('Marked paid! Next recurring due date scheduled.', 'success');
+        await fetchEvents();
+        await loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function syncEvents() {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/events/sync`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Sync failed');
+        const data = await res.json();
+        showToast(`Synced obligations (${data.new_events_created} new scheduled)`, 'success');
+        await fetchEvents();
+        await loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
     // ─── BANK ACCOUNTS & LIQUID PORTFOLIO ────────────────────────
+    let currentAccountsCount = 0;
+
     async function fetchAccounts() {
       if (!token) return;
       try {
@@ -2817,12 +3389,14 @@
         });
         if (!res.ok) return;
         const accounts = await res.json();
+        currentAccountsCount = accounts.length;
         renderAccounts(accounts);
       } catch (e) {}
     }
 
     function renderAccounts(accounts) {
       const container = document.getElementById('accounts-container');
+      currentAccountsCount = accounts.length;
       if (!accounts.length) {
         container.innerHTML = `
           <div class="col-span-full glass-card rounded-3xl p-8 border border-slate-800 text-center space-y-3">
@@ -2850,9 +3424,14 @@
                 <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-300">${escapeHTML(acc.name)}</span>
                 <div class="text-xs text-slate-400">${escapeHTML(acc.bank_name || 'Bank Account')}</div>
               </div>
-              <span class="text-xs font-extrabold text-emerald-400 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                ${acc.is_primary ? 'Primary' : 'Active'}
-              </span>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-extrabold text-emerald-400 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  ${acc.is_primary ? 'Primary' : 'Active'}
+                </span>
+                <button onclick="deleteAccount('${acc.id}')" title="Remove account" class="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </div>
             <div class="my-auto">
               <div class="text-2xl font-extrabold text-white mono">₹${Number(acc.current_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
@@ -2860,11 +3439,29 @@
             </div>
             <div class="flex justify-between items-end text-[10px] text-slate-400 uppercase tracking-wider">
               <span>${acc.account_type.toUpperCase()}</span>
-              <span class="font-bold text-white">VERIFIED</span>
+              <span class="font-bold text-white">LIVE TRACKED</span>
             </div>
           </div>
         `;
       }).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    async function deleteAccount(accId) {
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/accounts/${accId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to remove account');
+        showToast('Account removed', 'info');
+        await fetchAccounts();
+        await recomputeLifeState();
+        await fetchSafeToSpend();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
     function openNewAccountModal() { document.getElementById('account-modal').classList.remove('hidden'); }
@@ -2891,7 +3488,7 @@
             account_type,
             bank_name,
             current_balance,
-            is_primary: false
+            is_primary: currentAccountsCount === 0
           })
         });
 

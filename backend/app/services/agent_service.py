@@ -112,6 +112,13 @@ INTENT_PATTERNS: List[Tuple[List[str], List[str]]] = [
         ["what changed", "what's different", "difference", "compare"],
         ["get_life_state"],
     ),
+    # Actionable savings / budgeting / debt payoff plan
+    (
+        ["how to save", "save more", "save money", "budget plan", "make a plan",
+         "reduce expense", "cut spending", "action plan", "debt payoff", "clear debt",
+         "pay off", "snowball", "avalanche", "safe to spend", "daily limit", "can i spend"],
+        ["get_life_state", "get_spending_by_category", "get_subscriptions", "get_loans"],
+    ),
 ]
 
 
@@ -564,6 +571,14 @@ class AgentService:
             s = results["get_subscriptions"]
             sections.append(self._format_subscriptions(s))
 
+        # ── Personalized Action Plan (when user asks to save/budget/plan/clear debt/daily spend) ──
+        plan_triggers = (
+            "save", "budget", "plan", "reduce", "cut", "action", "debt payoff",
+            "clear debt", "pay off", "snowball", "avalanche", "safe to spend", "daily limit", "can i spend"
+        )
+        if any(k in lower for k in plan_triggers) and "get_life_state" in results:
+            sections.append(self._format_action_plan(results))
+
         if not sections:
             return (
                 "I wasn't able to retrieve the information you requested. "
@@ -571,6 +586,54 @@ class AgentService:
             )
 
         return "\n\n".join(sections)
+
+    def _format_action_plan(self, results: Dict[str, Dict[str, Any]]) -> str:
+        """Builds a concrete rupee-by-rupee action plan grounded in retrieved tool outputs."""
+        ls = results.get("get_life_state", {})
+        sp = results.get("get_spending_by_category", {})
+        subs = results.get("get_subscriptions", {})
+        loans = results.get("get_loans", {})
+
+        inc = float(ls.get("monthly_income") or 0)
+        exp = float(ls.get("monthly_expenses") or 0)
+        bal = float(ls.get("total_balance") or 0)
+        lines = ["🎯 **Actionable Monthly Game Plan**"]
+
+        if inc <= 0 and bal <= 0:
+            lines.append("• First step: use **Quick Setup** on your Dashboard to enter your current balance and monthly income so I can build a custom budget.")
+            return "\n".join(lines)
+
+        if inc > 0:
+            needs_cap = inc * 0.50
+            wants_cap = inc * 0.30
+            save_target = inc * 0.20
+            lines.append(
+                f"• **50/30/20 Target on {self._fmt_inr(inc)}/mo:** "
+                f"Needs ≤ {self._fmt_inr(needs_cap)} | Wants ≤ {self._fmt_inr(wants_cap)} | Save ≥ {self._fmt_inr(save_target)}"
+            )
+
+        cats = sp.get("categories", [])
+        discretionary = [c for c in cats if c.get("category") not in ("Rent", "EMI & Loans", "Salary", "Insurance", "Investments")]
+        if discretionary:
+            top = discretionary[0]
+            cut_amt = round(float(top.get("total_spent", 0)) * 0.20)
+            if cut_amt > 0:
+                lines.append(
+                    f"• **Quickest Win:** Cutting **{top['category']}** ({self._fmt_inr(top['total_spent'])}) by 20% frees up **{self._fmt_inr(cut_amt)}/month**."
+                )
+
+        sub_cost = float(subs.get("total_monthly_cost") or ls.get("total_subscription_burden") or 0)
+        if sub_cost > 0:
+            lines.append(f"• **Subscription Audit:** Cancelling 1–2 unused subscriptions from your {self._fmt_inr(sub_cost)}/mo recurring stack saves immediately.")
+
+        loan_list = loans.get("loans", [])
+        if loan_list:
+            highest_apr = max(loan_list, key=lambda l: float(l.get("interest_rate") or 0))
+            lines.append(
+                f"• **Debt Avalanche Priority:** Target **{highest_apr['name']}** ({highest_apr.get('interest_rate', 0)}% APR) first with any surplus cash to cut interest fastest."
+            )
+
+        return "\n".join(lines)
 
     # ─── Formatters ────────────────────────────────────
 
