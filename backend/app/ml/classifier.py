@@ -26,15 +26,15 @@ RULE_PATTERNS = {
     "Utilities": [r"\bgas bill\b", r"\bindraprastha gas\b", r"\bmahanagar gas\b", r"\bwater bill\b", r"\bbill desk\b"],
     "Mobile & Internet": [r"\bairtel\b", r"\bjio\b", r"\bvodafone\b", r"\bvi\b", r"\bbroadband\b", r"\bfiber\b", r"\bact fiber\b"],
     "Subscriptions": [r"\bnetflix\b", r"\bspotify\b", r"\bprime\b", r"\bhotstar\b", r"\byoutube\b", r"\bcult\.fit\b", r"\bapple\.com/bill\b"],
-    "Food & Dining": [r"\bswiggy\b", r"\bzomato\b", r"\bmcdonald\b", r"\bstarbucks\b", r"\bdominos\b", r"\bhaldiram\b", r"\bcoffee\b", r"\brestaurant\b", r"\bcafe\b", r"\bdinner\b", r"\blunch\b", r"\bbreakfast\b", r"\btea\b", r"\bchai\b", r"\bsnacks\b", r"\bpizza\b", r"\bburger\b", r"\bbiryani\b"],
-    "Groceries": [r"\bblinkit\b", r"\bzepto\b", r"\binstamart\b", r"\bbigbasket\b", r"\bdmart\b", r"\bkirana\b", r"\bsupermarket\b", r"\bgrocery\b"],
+    "Food & Dining": [r"\bswiggy\b", r"\bzomato\b", r"\bmcdonald\b", r"\bstarbucks\b", r"\bdominos\b", r"\bhaldiram\b", r"\bcoffee\b", r"\brestaurant\b", r"\bcafe\b", r"\bdinner\b", r"\blunch\b", r"\bbreakfast\b", r"\btea\b", r"\bchai\b", r"\bsnacks\b", r"\bpizza\b", r"\bburger\b", r"\bbiryani\b", r"\bkfc\b", r"\bbakery\b"],
+    "Groceries": [r"\bblinkit\b", r"\bzepto\b", r"\binstamart\b", r"\bbigbasket\b", r"\bdmart\b", r"\bkirana\b", r"\bsupermarket\b", r"\bgrocery\b", r"\bbig bazaar\b"],
     "Fuel": [r"\bfuel\b", r"\bpetrol\b", r"\bdiesel\b", r"\bindian oil\b", r"\bbharat petroleum\b", r"\bbharat petro\b", r"\bhpcl\b", r"\bshell\b"],
-    "Transportation": [r"\buber\b", r"\bola\b", r"\bblusmart\b", r"\bmetro\b", r"\brailway\b", r"\birctc\b", r"\bauto rickshaw\b", r"\bautorickshaw\b", r"\bauto-rickshaw\b", r"\bauto\b", r"\bcab\b", r"\btaxi\b"],
-    "Shopping": [r"\bamazon\b", r"\bflipkart\b", r"\bmyntra\b", r"\bzara\b", r"\buniqlo\b", r"\bcroma\b", r"\bajio\b", r"\bretail\b", r"\bclothing\b", r"\bmacbook\b", r"\blaptop\b", r"\biphone\b", r"\bshoes\b", r"\belectronics\b"],
+    "Transportation": [r"\buber\b", r"\bola\b", r"\bblusmart\b", r"\bmetro\b", r"\brailway\b", r"\birctc\b", r"\bauto rickshaw\b", r"\bautorickshaw\b", r"\bauto-rickshaw\b", r"\bauto\b", r"\bcab\b", r"\btaxi\b", r"\brapido\b", r"\bredbus\b", r"\bindigo\b", r"\bmakemytrip\b", r"\bflight\b", r"\bhotel\b", r"\bbus ticket\b"],
+    "Shopping": [r"\bamazon\b", r"\bflipkart\b", r"\bmyntra\b", r"\bzara\b", r"\buniqlo\b", r"\bcroma\b", r"\bajio\b", r"\bretail\b", r"\bclothing\b", r"\bmacbook\b", r"\blaptop\b", r"\biphone\b", r"\bshoes\b", r"\belectronics\b", r"\bikea\b", r"\bfurniture\b", r"\bebay\b", r"\blifestyle\b", r"\breliance digital\b"],
     "Health & Medical": [r"\bpharmacy\b", r"\bapollo\b", r"\b1mg\b", r"\bmedplus\b", r"\bhospital\b", r"\bclinic\b", r"\bdr\.\b", r"\blab\b"],
     "Entertainment": [r"\bbookmyshow\b", r"\bpvr\b", r"\binox\b", r"\bcinema\b", r"\bmovie\b", r"\bsteam\b", r"\bgaming\b"],
     "Maintenance": [r"\burban company\b", r"\bmaintenance\b", r"\belectrician\b", r"\bplumber\b", r"\bsociety\b"],
-    "Investments": [r"\bzerodha\b", r"\bgroww\b", r"\bmf\b", r"\bmutual fund\b", r"\bshares\b", r"\bsecurities\b", r"\bkuvera\b"],
+    "Investments": [r"\bzerodha\b", r"\bgroww\b", r"\bmf\b", r"\bmutual fund\b", r"\bshares\b", r"\bsecurities\b", r"\bkuvera\b", r"\betf\b", r"\bnps\b", r"\bppf\b", r"\bfixed deposit\b", r"\bdemat\b", r"\bgold bond\b", r"\bsip\b"],
 }
 
 
@@ -43,9 +43,10 @@ def preprocess_text(text: str) -> str:
     if not text or not isinstance(text, str):
         return ""
     cleaned = text.lower()
-    # Remove technical transaction prefixes/suffixes
+    # Remove technical transaction prefixes, hex/numeric refs, and trailing currency amounts
     cleaned = re.sub(r"^(upi/|pos/|ach credit —|nach debit —|e-com/|bbps |pos/e-com recurring —)", "", cleaned)
-    cleaned = re.sub(r"ref-\d+", "", cleaned)
+    cleaned = re.sub(r"\bref[:\-\s]*[a-z0-9]+\b", " ", cleaned)
+    cleaned = re.sub(r"\b(?:amount\s*:)?\s*(?:inr|rs\.?|₹)\s*\d+(?:,\d+)*(?:\.\d+)?\b", " ", cleaned)
     cleaned = re.sub(r"[^a-zA-Z0-9\s]", " ", cleaned)
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
     return cleaned

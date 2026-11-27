@@ -20,6 +20,7 @@ from app.config import settings
 
 # Mapping from external datasets to standard LIFEOS categories
 CATEGORY_NORMALIZATION = {
+    "food": "Food & Dining",
     "food & drink": "Food & Dining",
     "food & dining": "Food & Dining",
     "dining": "Food & Dining",
@@ -42,6 +43,7 @@ CATEGORY_NORMALIZATION = {
     "investments": "Investments",
     "subscriptions": "Subscriptions",
     "subscription": "Subscriptions",
+    "emi": "EMI & Loans",
     "emi & loans": "EMI & Loans",
     "maintenance": "Maintenance",
     "mobile & internet": "Mobile & Internet",
@@ -115,7 +117,28 @@ def load_and_prepare_data(workspace_root: str):
                 descriptions.append(desc)
                 labels.append(norm_cat)
 
-    # 3. Balance minority Indian merchant categories for strong macro-F1
+    # 3. Kaggle Indian Bank & UPI Transaction Narration Train Sets (15,000 rows; test sets kept strictly unseen)
+    for ft_name in ["financial_transactions_train.csv", "financial_transaction_train.csv"]:
+        ft_path = os.path.join(workspace_root, "data", "kaggle", "personal_finance", ft_name)
+        if os.path.exists(ft_path):
+            print(f"📖 Loading Kaggle narration train dataset: {ft_path}")
+            df_ft = pd.read_csv(ft_path)
+            for _, row in df_ft.iterrows():
+                desc = str(row.get("Transaction_Text", "")).strip()
+                raw_cat = str(row.get("Label", "")).strip().lower()
+                lower_desc = desc.lower()
+                # Refine generic 5-class Kaggle labels into LIFEOS's finer-grained schema consistently
+                if "grocery" in lower_desc or "supermarket" in lower_desc or "big bazaar" in lower_desc:
+                    norm_cat = "Groceries"
+                elif "petrol" in lower_desc or "fuel" in lower_desc or "diesel" in lower_desc:
+                    norm_cat = "Fuel"
+                else:
+                    norm_cat = CATEGORY_NORMALIZATION.get(raw_cat, "Miscellaneous")
+                if desc and norm_cat:
+                    descriptions.append(desc)
+                    labels.append(norm_cat)
+
+    # 4. Balance minority Indian merchant categories for strong macro-F1
     for cat_name, templates in MINORITY_AUGMENTATION.items():
         for i in range(40):
             for tpl in templates:
